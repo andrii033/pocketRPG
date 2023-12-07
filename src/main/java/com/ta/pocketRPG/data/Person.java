@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 @Entity
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
