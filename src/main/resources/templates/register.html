@@ -8,7 +8,7 @@
 <body>
 <h2>Person Registration</h2>
 
-<form action="/persons/register" method="post" th:object="${person}">
+<form action="/register" method="post" th:object="${person}">
   <label for="name">Name:</label>
   <input type="text" id="name" name="name" th:field="*{name}" required>
 
