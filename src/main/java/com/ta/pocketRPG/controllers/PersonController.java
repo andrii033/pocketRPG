@@ -57,7 +57,6 @@ public class PersonController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("person", new Person());
-        System.out.println("getMapping----------------------");
         return "register";
     }
 
