@@ -1,31 +1,28 @@
 package com.ta.pocketRPG.data;
 
-import javax.persistence.Id;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import lombok.Data;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
+@Data
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @NotBlank
+    @Size(min = 3, max = 15)
     private String name;
+    @NotBlank
+    @Size(min = 6, max = 30)
+    private String password;
+    @Transient
+    private String repassword;
+    @NotBlank
+    @Email
+    private String email;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
