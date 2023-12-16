@@ -1,6 +1,7 @@
 package com.ta.pocketRPG.controllers;
 
 import com.ta.pocketRPG.PersonRepository;
+import com.ta.pocketRPG.data.LoginForm;
 import com.ta.pocketRPG.data.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,31 @@ public class PersonController {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @GetMapping("/login")
+    public String showLoginForm(Model model) {
+        model.addAttribute("loginForm", new LoginForm());
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String login(@ModelAttribute LoginForm loginForm, Model model) {
+        String name = loginForm.getName();
+        String password = loginForm.getPassword();
+
+
+        Person person = personRepository.findByNameAndPassword(name, password);
+
+        if (person != null) {
+            // Successful login, redirect to a welcome page or dashboard
+            model.addAttribute("person", person);
+            return "welcome";
+        } else {
+            // Failed login, show login form with an error message
+            model.addAttribute("loginError", "Invalid credentials");
+            return "login";
+        }
+    }
 
     @GetMapping
     public String getAllPersons(Model model) {
