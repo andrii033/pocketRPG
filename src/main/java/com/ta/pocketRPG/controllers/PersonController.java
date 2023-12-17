@@ -17,6 +17,11 @@ public class PersonController {
     @Autowired
     private PersonRepository personRepository;
 
+    @GetMapping("/")
+    public String home(){
+        return "home";
+    }
+
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("loginForm", new LoginForm());
