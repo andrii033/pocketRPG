@@ -21,9 +21,10 @@ public class UserService {
         User newUser = new User();
         newUser.setUsername("name");
         newUser.setPassword("12345");
-        //newUser.setUsername(username);
+        newUser.setEmail("user@user");
+        newUser.setUsername(username);
         // Store the password in plaintext (not recommended for production)
-        //newUser.setPassword(password);
+        newUser.setPassword(password);
         return userRepository.save(newUser);
     }
 

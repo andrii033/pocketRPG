@@ -20,9 +20,10 @@ public class User {
 
     private String password;
 
-//    private String repassword;
+    @Transient
+    private String repassword;
 //
 //    @NotBlank
 //    @Email
-//    private String email;
+    private String email;
 }
