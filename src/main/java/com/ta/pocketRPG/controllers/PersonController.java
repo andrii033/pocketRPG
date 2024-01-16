@@ -4,6 +4,10 @@ import com.ta.pocketRPG.model.User;
 import com.ta.pocketRPG.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +24,7 @@ public class PersonController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("user",new User());
+        model.addAttribute("user", new User());
         return "register";
     }
 
@@ -28,10 +32,41 @@ public class PersonController {
     public String registerPerson(@ModelAttribute("user") User user) {
         log.info("post");
         String hashedPassword = passwordEncoder.encode(user.getPassword());
-        userService.registerUser(user.getUsername(),hashedPassword);
+        userService.registerUser(user.getUsername(), hashedPassword);
+
+        // Find the user by username
+        User registeredUser = userService.findByUsername("user");
+        log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(), registeredUser.getPassword(), registeredUser != null);
 
         return "redirect:/login";
     }
 
+    @GetMapping("/login")
+    public String showLoginForm(Model model) {
+        model.addAttribute("user", new User());
+        log.info("login get");
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String loginPerson(@RequestParam("username") String username, @RequestParam("password") String password) {
+        log.info("login post - Username: {}, Password: {}", username, password);
+
+        // Authenticate the user
+        UserDetails userDetails = userService.loadUserByUsername(username);
+
+        if (userDetails != null && passwordEncoder.matches(password, userDetails.getPassword())) {
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Add logic for successful authentication, if needed
+
+            return "redirect:/home";
+        } else {
+            // Add logic for unsuccessful authentication, e.g., redirect to login page with an error message
+            return "redirect:/login?error";
+        }
+    }
 
 }
