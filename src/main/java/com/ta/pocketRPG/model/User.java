@@ -18,11 +18,12 @@ public class User implements UserDetails {
 
     private String username;
     private String password;
+    private String email;
 
     @Transient
     private String repassword;
 
-    private String email;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

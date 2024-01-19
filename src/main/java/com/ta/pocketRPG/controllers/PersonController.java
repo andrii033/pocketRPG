@@ -32,7 +32,7 @@ public class PersonController {
     public String registerPerson(@ModelAttribute("user") User user) {
         log.info("post");
         String hashedPassword = passwordEncoder.encode(user.getPassword());
-        userService.registerUser(user.getUsername(), hashedPassword);
+        userService.registerUser(user.getUsername(), hashedPassword,user.getEmail());
 
         // Find the user by username
         User registeredUser = userService.findByUsername("user");

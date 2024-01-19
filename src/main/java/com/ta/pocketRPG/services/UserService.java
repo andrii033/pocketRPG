@@ -19,11 +19,12 @@ public class UserService implements UserDetailsService {
         this.userRepository=userRepository;
     }
 
-    public User registerUser(String username, String password) {
+    public User registerUser(String username, String password, String email) {
 
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
+        newUser.setEmail(email);
 
         return userRepository.save(newUser);
     }
