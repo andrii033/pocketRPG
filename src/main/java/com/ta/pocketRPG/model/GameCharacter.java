@@ -10,6 +10,7 @@ public class GameCharacter {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String characterName;
     private int lvl=1;
     private int resets;
