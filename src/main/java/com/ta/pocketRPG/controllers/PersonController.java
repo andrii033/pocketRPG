@@ -1,5 +1,6 @@
 package com.ta.pocketRPG.controllers;
 
+import com.ta.pocketRPG.model.GameCharacter;
 import com.ta.pocketRPG.model.User;
 import com.ta.pocketRPG.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,12 @@ public class PersonController {
         // Find the user by username
         User registeredUser = userService.findByUsername("user");
         log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(), registeredUser.getPassword(), registeredUser != null);
+
+        GameCharacter gameCharacter = new GameCharacter();
+        gameCharacter.setCharacterName("Default Character");
+        gameCharacter.setLvl(1);
+
+        userService.saveGameCharacter(user.getUsername(), gameCharacter.getCharacterName());
 
         return "redirect:/login";
     }

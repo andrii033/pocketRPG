@@ -3,11 +3,11 @@ package com.ta.pocketRPG.model;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,6 +23,8 @@ public class User implements UserDetails {
     @Transient
     private String repassword;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<GameCharacter> characters = new ArrayList<>();
 
 
     @Override

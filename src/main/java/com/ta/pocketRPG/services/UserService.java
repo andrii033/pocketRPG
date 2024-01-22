@@ -1,5 +1,6 @@
 package com.ta.pocketRPG.services;
 
+import com.ta.pocketRPG.model.GameCharacter;
 import com.ta.pocketRPG.model.User;
 import com.ta.pocketRPG.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Slf4j
 @Service
@@ -36,6 +39,22 @@ public class UserService implements UserDetailsService {
     public User findByUsername(String username){
         return userRepository.findByUsername(username);
     }
+
+    public void saveGameCharacter(String username, String characterName) {
+        User user = userRepository.findByUsername(username);
+
+        if (user.getCharacters() == null) {
+            user.setCharacters(new ArrayList<>());
+        }
+
+        GameCharacter gameCharacter = new GameCharacter();
+        gameCharacter.setCharacterName(characterName);
+        gameCharacter.setUser(user);
+
+        user.getCharacters().add(gameCharacter);
+        userRepository.save(user);
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
