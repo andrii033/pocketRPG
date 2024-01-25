@@ -14,7 +14,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("Login successful - Username: {}", authentication.getName());
-        response.sendRedirect("/home"); // Redirect to the home page after successful login
+        response.sendRedirect("/"); // Redirect to the home page after successful login
     }
 }
 

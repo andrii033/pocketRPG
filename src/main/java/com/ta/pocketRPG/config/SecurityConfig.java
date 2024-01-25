@@ -24,19 +24,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+        http.authorizeRequests()
+//                .antMatchers("/createCharacter").permitAll()
                 .antMatchers("/public", "/", "/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                //.loginPage("/login")
                 .successHandler(loginSuccessHandler())
                 .failureHandler(loginFailureHandler())
                 .permitAll()
                 .and()
-                .logout().permitAll();
+                .logout().permitAll()
+                .and()
+//                .csrf().disable()
+        ; // Disable CSRF protection
     }
+
 
     @Bean
     public UserDetailsService userDetailsService() {

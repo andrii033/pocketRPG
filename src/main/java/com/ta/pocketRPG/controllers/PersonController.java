@@ -39,11 +39,11 @@ public class PersonController {
         User registeredUser = userService.findByUsername("user");
         log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(), registeredUser.getPassword(), registeredUser != null);
 
-        GameCharacter gameCharacter = new GameCharacter();
-        gameCharacter.setCharacterName("Default Character");
-        gameCharacter.setLvl(1);
-
-        userService.saveGameCharacter(user.getUsername(), gameCharacter.getCharacterName());
+//        GameCharacter gameCharacter = new GameCharacter();
+//        gameCharacter.setCharacterName("Default Character");
+//        gameCharacter.setLvl(1);
+//
+//        userService.saveGameCharacter(user.getUsername(), gameCharacter.getCharacterName());
 
         return "redirect:/login";
     }
@@ -69,11 +69,31 @@ public class PersonController {
 
             // Add logic for successful authentication, if needed
 
-            return "redirect:/home";
+            return "redirect:/createCharacter";
         } else {
             // Add logic for unsuccessful authentication, e.g., redirect to login page with an error message
             return "redirect:/login?error";
         }
+    }
+
+    @GetMapping("/createCharacter")
+    public String createCharacterForm(Model model) {
+        model.addAttribute("gameCharacter", new GameCharacter());
+        log.info("create character get");
+        return "createCharacter";
+    }
+
+    @PostMapping("/createCharacter")
+    public String createCharacter(@RequestParam("characterName") String characterName) {
+        log.info("create character post " + characterName);
+
+        // Assuming you have access to the currently logged-in user's username
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        userService.saveGameCharacter(username, characterName);
+
+        return "redirect:/public"; // Redirect to the home page or wherever you want after creating the character
     }
 
 }
