@@ -18,8 +18,8 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository){
-        this.userRepository=userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public User registerUser(String username, String password, String email) {
@@ -36,23 +36,20 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username) != null;
     }
 
-    public User findByUsername(String username){
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public void saveGameCharacter(String username, String characterName, int str) {
+    public void saveGameCharacter(String username, GameCharacter character) {
         User user = userRepository.findByUsername(username);
 
         if (user.getCharacters() == null) {
             user.setCharacters(new ArrayList<>());
         }
 
-        GameCharacter gameCharacter = new GameCharacter();
-        gameCharacter.setCharacterName(characterName);
-        gameCharacter.setUser(user);
-        gameCharacter.setStr(str);
+        character.setUser(user);
+        user.getCharacters().add(character);
 
-        user.getCharacters().add(gameCharacter);
         userRepository.save(user);
     }
 
@@ -60,7 +57,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
-        if (user == null){
+        if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
         return (UserDetails) user;
