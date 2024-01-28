@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    public void saveGameCharacter(String username, String characterName) {
+    public void saveGameCharacter(String username, String characterName, int str) {
         User user = userRepository.findByUsername(username);
 
         if (user.getCharacters() == null) {
@@ -50,6 +50,7 @@ public class UserService implements UserDetailsService {
         GameCharacter gameCharacter = new GameCharacter();
         gameCharacter.setCharacterName(characterName);
         gameCharacter.setUser(user);
+        gameCharacter.setStr(str);
 
         user.getCharacters().add(gameCharacter);
         userRepository.save(user);

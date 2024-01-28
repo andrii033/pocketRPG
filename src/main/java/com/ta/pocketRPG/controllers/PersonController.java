@@ -84,14 +84,18 @@ public class PersonController {
     }
 
     @PostMapping("/createCharacter")
-    public String createCharacter(@RequestParam("characterName") String characterName) {
-        log.info("create character post " + characterName);
+//    public String createCharacter(@RequestParam("characterName") String characterName,
+//                                  @RequestParam("str") int str) {
+    public String createCharacter(@ModelAttribute("gameCharacter") GameCharacter gameCharacter) {
+//        log.info("create character post " + characterName);
+        log.info("post "+gameCharacter.getCharacterName());
 
         // Assuming you have access to the currently logged-in user's username
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        userService.saveGameCharacter(username, characterName);
+//        userService.saveGameCharacter(username, characterName,str);
+        userService.saveGameCharacter(username, gameCharacter.getCharacterName(), gameCharacter.getStr());
 
         return "redirect:/public"; // Redirect to the home page or wherever you want after creating the character
     }
