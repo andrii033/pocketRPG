@@ -62,4 +62,20 @@ public class UserService implements UserDetailsService {
         }
         return (UserDetails) user;
     }
+
+    public GameCharacter loadGameCharacterByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+
+        if (user.getCharacters() == null || user.getCharacters().isEmpty()) {
+            // No GameCharacter found for the given username
+            return null;
+        }
+
+        // For simplicity, assuming that a user has only one GameCharacter.
+        // Adjust this logic based on your actual requirements.
+        return user.getCharacters().get(0);
+    }
 }

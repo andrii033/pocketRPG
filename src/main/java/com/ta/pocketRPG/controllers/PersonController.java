@@ -95,7 +95,7 @@ public class PersonController {
             return "redirect:/createCharacter";
         userService.saveGameCharacter(username, gameCharacter);
 
-        return "redirect:/public";
+        return "redirect:/fight";
     }
 
 }
