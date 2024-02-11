@@ -2,6 +2,7 @@ package com.ta.pocketRPG.services;
 
 import com.ta.pocketRPG.model.GameCharacter;
 import com.ta.pocketRPG.model.User;
+import com.ta.pocketRPG.repository.GameCharacterRepository;
 import com.ta.pocketRPG.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
 public class UserService implements UserDetailsService {
+    @Autowired
+    private GameCharacterRepository gameCharacterRepository;
     private final UserRepository userRepository;
 
     @Autowired
@@ -78,4 +82,9 @@ public class UserService implements UserDetailsService {
         // Adjust this logic based on your actual requirements.
         return user.getCharacters().get(0);
     }
+
+    public List<GameCharacter> getAllGameCharactersByUsername(String username) {
+        return gameCharacterRepository.findByUserUsername(username);
+    }
+
 }

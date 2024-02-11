@@ -5,23 +5,23 @@
     <title>Title</title>
 </head>
 <body>
-<form action="/fight" method="post">
+<form action="/fight" method="post" th:object="${enemy}">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" th:field="*{enemy.name}" required disabled>
-    <label for="hp">hp:</label>
-    <input type="text" id="hp" name="hp" th:field="*{enemy.hp}" required disabled>
-    <label for="attack">attack:</label>
-    <input type="text" id="attack" name="attack" th:field="*{enemy.attack}" required disabled>
+    <label for="enemyName">Enemy Name:</label>
+    <input type="text" id="enemyName" name="enemyName" th:field="*{enemyName}" required disabled>
+    <label for="enemyHp">Enemy HP:</label>
+    <input type="text" id="enemyHp" name="enemyHp" th:field="*{hp}" required disabled>
+    <label for="enemyAttack">Enemy Attack:</label>
+    <input type="text" id="enemyAttack" name="enemyAttack" th:field="*{attack}" required disabled>
     <br><br>
 
-    <label for="characterName">Name:</label>
-    <input type="text" id="characterName" name="characterName" th:field="*{gameCharacter.characterName}" required disabled>
-    <label for="hpCharacter">hp:</label>
-    <input type="text" id="hpCharacter" name="hpCharacter" th:field="*{gameCharacter.str}" required disabled>
-    <label for="attackCharacter">attack:</label>
-    <input type="text" id="attackCharacter" name="attackCharacter" th:field="*{gameCharacter.str}" required disabled>
+    <label for="characterName">Character Name:</label>
+    <input type="text" id="characterName" name="characterName" th:field="${gameCharacter.characterName}" required disabled>
+    <label for="hpCharacter">Character HP:</label>
+    <input type="text" id="hpCharacter" name="hpCharacter" th:field="${gameCharacter.str}" required disabled>
+    <label for="attackCharacter">Character Attack:</label>
+    <input type="text" id="attackCharacter" name="attackCharacter" th:field="${gameCharacter.str}" required disabled>
     <br><br>
     <button type="submit">fight</button>
 </form>

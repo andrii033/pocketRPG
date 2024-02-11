@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @Controller
 public class PersonController {
@@ -39,19 +41,12 @@ public class PersonController {
         User registeredUser = userService.findByUsername("user");
         log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(), registeredUser.getPassword(), registeredUser != null);
 
-//        GameCharacter gameCharacter = new GameCharacter();
-//        gameCharacter.setCharacterName("Default Character");
-//        gameCharacter.setLvl(1);
-//
-//        userService.saveGameCharacter(user.getUsername(), gameCharacter.getCharacterName());
-
         return "redirect:/login";
     }
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("user", new User());
-        log.info("login get");
         return "login";
     }
 
@@ -78,6 +73,12 @@ public class PersonController {
 
     @GetMapping("/createCharacter")
     public String createCharacterForm(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usernname = authentication.getName();
+
+        List<GameCharacter> userCharacters = userService.getAllGameCharactersByUsername(usernname);
+
+        model.addAttribute("userCharacters",userCharacters);
         model.addAttribute("gameCharacter", new GameCharacter());
         log.info("create character get");
         return "createCharacter";
