@@ -20,7 +20,8 @@ public class HelloController {
     @GetMapping("/public")
     public String publicEndpoint(User user) {
         userService.usernameExists("user");
-        log.info("User registered - Username: {}, Password: {}, UserExists: {}", user.getUsername(),user.getPassword(),user.getId());
+        log.info("User registered - Username: {}, Password: {}, UserExists: {}",
+                user.getUsername(),user.getPassword(),user.getId());
         return "public";
     }
 

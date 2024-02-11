@@ -39,7 +39,8 @@ public class PersonController {
 
         // Find the user by username
         User registeredUser = userService.findByUsername("user");
-        log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(), registeredUser.getPassword(), registeredUser != null);
+        log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(),
+                registeredUser.getPassword(), registeredUser != null);
 
         return "redirect:/login";
     }
@@ -74,9 +75,9 @@ public class PersonController {
     @GetMapping("/createCharacter")
     public String createCharacterForm(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String usernname = authentication.getName();
+        String username = authentication.getName();
 
-        List<GameCharacter> userCharacters = userService.getAllGameCharactersByUsername(usernname);
+        List<GameCharacter> userCharacters = userService.getAllGameCharactersByUsername(username);
 
         model.addAttribute("userCharacters",userCharacters);
         model.addAttribute("gameCharacter", new GameCharacter());

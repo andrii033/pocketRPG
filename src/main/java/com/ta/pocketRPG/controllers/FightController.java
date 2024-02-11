@@ -23,19 +23,21 @@ public class FightController {
     @Autowired
     private EnemyService enemyService;
 
-    private Enemy enemy=new Enemy();
+    private Enemy enemy = new Enemy();
+
     @GetMapping("/fight")
-    public String fightGet(Model model){
+    public String fightGet(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         GameCharacter gameCharacter = userService.loadGameCharacterByUsername(username);
-        model.addAttribute("enemy",enemy);
-        model.addAttribute("gameCharacter",gameCharacter);
+        model.addAttribute("enemy", enemy);
+        model.addAttribute("gameCharacter", gameCharacter);
         return "fight";
     }
 
     @PostMapping("/fight")
-    public String fightPost(@ModelAttribute("gameCharacter") GameCharacter gameCharacter,@ModelAttribute("enemy") Enemy enemy, BindingResult bindingResult){
+    public String fightPost(@ModelAttribute("gameCharacter") GameCharacter gameCharacter,
+                            @ModelAttribute("enemy") Enemy enemy, BindingResult bindingResult) {
         log.info("post fight");
         log.info(bindingResult.toString());
         enemy.setHp(5);
