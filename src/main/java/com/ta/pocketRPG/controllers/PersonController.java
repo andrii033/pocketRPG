@@ -86,7 +86,8 @@ public class PersonController {
     }
 
     @PostMapping("/createCharacter")
-    public String createCharacter(@ModelAttribute("gameCharacter") GameCharacter gameCharacter) {
+    public String createCharacter(@ModelAttribute("gameCharacter") GameCharacter gameCharacter,
+                                  @ModelAttribute("user") User user) {
         log.info("post "+gameCharacter.getCharacterName());
 
         // Assuming you have access to the currently logged-in user's username
@@ -95,7 +96,23 @@ public class PersonController {
 
         if(gameCharacter.getStr()+ gameCharacter.getAgi()+ gameCharacter.getInte() > 8)
             return "redirect:/createCharacter";
-        userService.saveGameCharacter(username, gameCharacter);
+
+        user = userService.findByUsername(username);
+
+        // Create a new instance of GameCharacter
+        GameCharacter newCharacter = new GameCharacter();
+        newCharacter.setCharacterName(gameCharacter.getCharacterName());
+        newCharacter.setStr(gameCharacter.getStr());
+        newCharacter.setAgi(gameCharacter.getAgi());
+        newCharacter.setInte(gameCharacter.getInte());
+
+        // Save the new character
+        userService.saveGameCharacter(username, newCharacter);
+
+//        user.setChosenCharacterId(newCharacter.getId());
+//        log.info("game character id "+newCharacter.getId());
+//
+//        userService.updateUser(user);
 
         return "redirect:/fight";
     }

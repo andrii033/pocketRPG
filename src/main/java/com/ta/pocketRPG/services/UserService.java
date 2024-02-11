@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private GameCharacterRepository gameCharacterRepository;
     private final UserRepository userRepository;
+
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -85,6 +87,10 @@ public class UserService implements UserDetailsService {
 
     public List<GameCharacter> getAllGameCharactersByUsername(String username) {
         return gameCharacterRepository.findByUserUsername(username);
+    }
+
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 
 }

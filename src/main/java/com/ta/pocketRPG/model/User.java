@@ -19,6 +19,7 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private String email;
+    private Long chosenCharacterId;
 
     @Transient
     private String repassword;
