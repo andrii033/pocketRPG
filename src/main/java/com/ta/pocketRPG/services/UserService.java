@@ -82,7 +82,7 @@ public class UserService implements UserDetailsService {
 
         // For simplicity, assuming that a user has only one GameCharacter.
         // Adjust this logic based on your actual requirements.
-        return user.getCharacters().get(0);
+        return user.getCharacters().get(Math.toIntExact(user.getChosenCharacterId()));
     }
 
     public List<GameCharacter> getAllGameCharactersByUsername(String username) {
@@ -91,6 +91,12 @@ public class UserService implements UserDetailsService {
 
     public void updateUser(User user) {
         userRepository.save(user);
+    }
+
+    public GameCharacter loadGameCharacterById(Long characterId) {
+        // Use findById to retrieve the GameCharacter by its ID
+        return gameCharacterRepository.findById(characterId)
+                .orElseThrow(() -> new EntityNotFoundException("GameCharacter not found with ID: " + characterId));
     }
 
 }

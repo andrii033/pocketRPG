@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface GameCharacterRepository extends JpaRepository<GameCharacter, Long> {
     List<GameCharacter> findByUserUsername(String username);
+    Optional<GameCharacter> findById(Long characterId);
 
 }

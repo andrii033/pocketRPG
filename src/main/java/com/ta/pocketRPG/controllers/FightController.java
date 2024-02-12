@@ -2,6 +2,7 @@ package com.ta.pocketRPG.controllers;
 
 import com.ta.pocketRPG.model.Enemy;
 import com.ta.pocketRPG.model.GameCharacter;
+import com.ta.pocketRPG.model.User;
 import com.ta.pocketRPG.services.EnemyService;
 import com.ta.pocketRPG.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,11 @@ public class FightController {
     public String fightGet(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        GameCharacter gameCharacter = userService.loadGameCharacterByUsername(username);
+//        GameCharacter gameCharacter = userService.loadGameCharacterByUsername(username);
+
+        User user = userService.findByUsername(username);
+
+        GameCharacter gameCharacter = userService.loadGameCharacterById(user.getChosenCharacterId());
         model.addAttribute("enemy", enemy);
         model.addAttribute("gameCharacter", gameCharacter);
         return "fight";
