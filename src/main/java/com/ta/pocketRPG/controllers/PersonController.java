@@ -46,7 +46,7 @@ public class PersonController {
 //
 //        return "redirect:/login";
 //    }
-    @PostMapping("/api/register")
+    @PostMapping("/register")
     public String registerUser(@RequestBody User user) {
         log.info("post");
         String hashedPassword = passwordEncoder.encode(user.getPassword());
@@ -122,11 +122,6 @@ public class PersonController {
 
         // Save the new character
         userService.saveGameCharacter(username, newCharacter);
-
-//        user.setChosenCharacterId(newCharacter.getId());
-//        log.info("game character id "+newCharacter.getId());
-//
-//        userService.updateUser(user);
 
         return "redirect:/fight";
     }
