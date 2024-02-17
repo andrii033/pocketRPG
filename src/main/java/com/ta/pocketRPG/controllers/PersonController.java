@@ -5,6 +5,7 @@ import com.ta.pocketRPG.model.User;
 import com.ta.pocketRPG.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 public class PersonController {
     @Autowired
     private UserService userService;
@@ -26,23 +27,36 @@ public class PersonController {
 
 
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User());
-        return "register";
+    public User showRegistrationForm(Model model) {
+        //model.addAttribute("user", new User());
+        return new User();
     }
 
-    @PostMapping("/register")
-    public String registerPerson(@ModelAttribute("user") User user) {
+
+    //    @PostMapping("/register")
+//    public String registerPerson(@ModelAttribute("user") User user) {
+//        log.info("post");
+//        String hashedPassword = passwordEncoder.encode(user.getPassword());
+//        userService.registerUser(user.getUsername(), hashedPassword,user.getEmail());
+//
+//        // Find the user by username
+//        User registeredUser = userService.findByUsername("user");
+//        log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(),
+//                registeredUser.getPassword(), registeredUser != null);
+//
+//        return "redirect:/login";
+//    }
+    @PostMapping("/api/register")
+    public String registerUser(@RequestBody User user) {
         log.info("post");
         String hashedPassword = passwordEncoder.encode(user.getPassword());
-        userService.registerUser(user.getUsername(), hashedPassword,user.getEmail());
+        userService.registerUser(user.getUsername(), hashedPassword, user.getEmail());
 
         // Find the user by username
         User registeredUser = userService.findByUsername("user");
         log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(),
                 registeredUser.getPassword(), registeredUser != null);
-
-        return "redirect:/login";
+        return "User registered successfully!";
     }
 
     @GetMapping("/login")
@@ -79,7 +93,7 @@ public class PersonController {
 
         List<GameCharacter> userCharacters = userService.getAllGameCharactersByUsername(username);
 
-        model.addAttribute("userCharacters",userCharacters);
+        model.addAttribute("userCharacters", userCharacters);
         model.addAttribute("gameCharacter", new GameCharacter());
         log.info("create character get");
         return "createCharacter";
@@ -88,13 +102,13 @@ public class PersonController {
     @PostMapping("/createCharacter")
     public String createCharacter(@ModelAttribute("gameCharacter") GameCharacter gameCharacter,
                                   @ModelAttribute("user") User user) {
-        log.info("post "+gameCharacter.getCharacterName());
+        log.info("post " + gameCharacter.getCharacterName());
 
         // Assuming you have access to the currently logged-in user's username
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        if(gameCharacter.getStr()+ gameCharacter.getAgi()+ gameCharacter.getInte() > 8)
+        if (gameCharacter.getStr() + gameCharacter.getAgi() + gameCharacter.getInte() > 8)
             return "redirect:/createCharacter";
 
         user = userService.findByUsername(username);
