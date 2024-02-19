@@ -42,6 +42,14 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username) != null;
     }
 
+    public boolean existsByEmail(String email) {
+        // Implement the logic to check if a user with the given email exists
+        // You might use a repository or any other data access mechanism for this check
+        // Assume userRepository is a repository for User entities
+        User existingUser = userRepository.findByEmail(email);
+        return existingUser != null;
+    }
+
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }

@@ -5,13 +5,13 @@ import com.ta.pocketRPG.model.User;
 import com.ta.pocketRPG.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +32,27 @@ public class PersonController {
         return new User();
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody User user) {
+        log.info("post");
+
+        // Check if the username or email already exists
+        if (userService.usernameExists(user.getUsername()) || userService.existsByEmail(user.getEmail())) {
+            log.warn("User with the same username or email already exists");
+            return new ResponseEntity<>("User with the same username or email already exists", HttpStatus.BAD_REQUEST);
+        }
+
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        userService.registerUser(user.getUsername(), hashedPassword, user.getEmail());
+
+        // Find the user by username
+        User registeredUser = userService.findByUsername(user.getUsername());
+        log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(),
+                registeredUser.getPassword(), registeredUser != null);
+
+        return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
+    }
+
 
     //    @PostMapping("/register")
 //    public String registerPerson(@ModelAttribute("user") User user) {
@@ -46,24 +67,13 @@ public class PersonController {
 //
 //        return "redirect:/login";
 //    }
-    @PostMapping("/register")
-    public String registerUser(@RequestBody User user) {
-        log.info("post");
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
-        userService.registerUser(user.getUsername(), hashedPassword, user.getEmail());
 
-        // Find the user by username
-        User registeredUser = userService.findByUsername("user");
-        log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(),
-                registeredUser.getPassword(), registeredUser != null);
-        return "User registered successfully!";
-    }
 
-    @GetMapping("/login")
-    public String showLoginForm(Model model) {
-        model.addAttribute("user", new User());
-        return "login";
-    }
+//    @GetMapping("/login")
+//    public String showLoginForm(Model model) {
+//        model.addAttribute("user", new User());
+//        return "login";
+//    }
 
     @PostMapping("/login")
     public String loginPerson(@RequestParam("username") String username, @RequestParam("password") String password) {
