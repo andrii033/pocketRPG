@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -28,20 +29,20 @@ public class PersonController {
 
     @GetMapping("/register")
     public User showRegistrationForm(Model model) {
+        log.info("get register");
         //model.addAttribute("user", new User());
         return new User();
     }
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
-        log.info("post");
+        log.info("post register");
 
         // Check if the username or email already exists
         if (userService.usernameExists(user.getUsername()) || userService.existsByEmail(user.getEmail())) {
             log.warn("User with the same username or email already exists");
             return new ResponseEntity<>("User with the same username or email already exists", HttpStatus.BAD_REQUEST);
         }
-
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         userService.registerUser(user.getUsername(), hashedPassword, user.getEmail());
 
@@ -54,30 +55,15 @@ public class PersonController {
     }
 
 
-    //    @PostMapping("/register")
-//    public String registerPerson(@ModelAttribute("user") User user) {
-//        log.info("post");
-//        String hashedPassword = passwordEncoder.encode(user.getPassword());
-//        userService.registerUser(user.getUsername(), hashedPassword,user.getEmail());
-//
-//        // Find the user by username
-//        User registeredUser = userService.findByUsername("user");
-//        log.info("User registered - Username: {}, Password: {}, UserExists: {}", registeredUser.getUsername(),
-//                registeredUser.getPassword(), registeredUser != null);
-//
-//        return "redirect:/login";
-//    }
-
-
-//    @GetMapping("/login")
-//    public String showLoginForm(Model model) {
-//        model.addAttribute("user", new User());
-//        return "login";
-//    }
-
     @PostMapping("/login")
-    public String loginPerson(@RequestParam("username") String username, @RequestParam("password") String password) {
-        log.info("login post - Username: {}, Password: {}", username, password);
+    public ResponseEntity<String> loginPerson(@RequestBody Map<String, String> credentials) {
+
+        log.info("login person");
+
+        String username = credentials.get("username");
+        String password = credentials.get("password");
+
+        log.info("login post - Username: {}", username);
 
         // Authenticate the user
         UserDetails userDetails = userService.loadUserByUsername(username);
@@ -89,12 +75,13 @@ public class PersonController {
 
             // Add logic for successful authentication, if needed
 
-            return "redirect:/createCharacter";
+            return ResponseEntity.ok("User authenticated successfully!");
         } else {
-            // Add logic for unsuccessful authentication, e.g., redirect to login page with an error message
-            return "redirect:/login?error";
+            // Add logic for unsuccessful authentication
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
 
     @GetMapping("/createCharacter")
     public String createCharacterForm(Model model) {
