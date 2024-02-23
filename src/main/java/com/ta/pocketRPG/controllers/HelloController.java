@@ -33,4 +33,5 @@ public class HelloController {
     public ResponseEntity<String> securedEndpoint() {
         return new ResponseEntity<>("secured", HttpStatus.OK);
     }
+
 }

@@ -1,13 +1,15 @@
 package com.ta.pocketRPG.controllers;
 
+import com.ta.pocketRPG.config.JwtConfig;
 import com.ta.pocketRPG.model.GameCharacter;
 import com.ta.pocketRPG.model.User;
 import com.ta.pocketRPG.services.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +29,9 @@ public class PersonController {
     private UserService userService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtConfig jwtConfig;
 
 
     @GetMapping("/register")
@@ -56,31 +63,62 @@ public class PersonController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginPerson(@RequestBody Map<String, String> credentials) {
-
-        log.info("login person");
-
+    public ResponseEntity<Map<String, String>> loginPerson(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
         String password = credentials.get("password");
 
-        log.info("login post - Username: {}", username);
+        log.info("login " + username + " " + password);
+        Map<String, String> response = new HashMap<>();
 
-        // Authenticate the user
         UserDetails userDetails = userService.loadUserByUsername(username);
-
         if (userDetails != null && passwordEncoder.matches(password, userDetails.getPassword())) {
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, userDetails.getPassword(), userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Add logic for successful authentication, if needed
+            // Generate JWT token
+            String token = jwtConfig.generateToken(userDetails.getUsername());
+            log.info("Generated token: " + token);
 
-            return ResponseEntity.ok("User authenticated successfully!");
+            response.put("token", token);
+            return ResponseEntity.ok(response);
         } else {
             // Add logic for unsuccessful authentication
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            log.warn("Failed authentication attempt for user: " + username);
+
+            response.put("error", "Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
+
+
+
+//    @PostMapping("/login")
+//    public ResponseEntity<String> loginPerson(@RequestBody Map<String, String> credentials) {
+//
+//        log.info("login person");
+//
+//        String username = credentials.get("username");
+//        String password = credentials.get("password");
+//
+//        log.info("login post - Username: {}", username);
+//
+//        // Authenticate the user
+//        UserDetails userDetails = userService.loadUserByUsername(username);
+//
+//        if (userDetails != null && passwordEncoder.matches(password, userDetails.getPassword())) {
+//            Authentication authentication = new UsernamePasswordAuthenticationToken(
+//                    userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//            // Add logic for successful authentication, if needed
+//
+//            return ResponseEntity.ok("User authenticated successfully!");
+//        } else {
+//            // Add logic for unsuccessful authentication
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+//        }
+//    }
 
 
     @GetMapping("/createCharacter")
