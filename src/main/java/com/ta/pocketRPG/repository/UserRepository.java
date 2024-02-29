@@ -1,10 +1,14 @@
 package com.ta.pocketRPG.repository;
 
-import com.ta.pocketRPG.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import com.ta.pocketRPG.domain.model.User;
 
+import java.util.Optional;
+
+@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
-    User findByEmail(String email);
-    
+    Optional<User> findByUsername(String username);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
 }
