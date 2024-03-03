@@ -25,7 +25,6 @@ public class JwtService {
 
     /**
      * Извлечение имени пользователя из токена
-     *
      * @param token токен
      * @return имя пользователя
      */
@@ -35,7 +34,6 @@ public class JwtService {
 
     /**
      * Генерация токена
-     *
      * @param userDetails данные пользователя
      * @return токен
      */

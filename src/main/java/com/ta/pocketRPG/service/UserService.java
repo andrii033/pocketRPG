@@ -16,7 +16,6 @@ public class UserService {
 
     /**
      * Сохранение пользователя
-     *
      * @return сохраненный пользователь
      */
     public User save(User user) {
@@ -26,7 +25,6 @@ public class UserService {
 
     /**
      * Создание пользователя
-     *
      * @return созданный пользователь
      */
     public User create(User user) {
@@ -44,7 +42,6 @@ public class UserService {
 
     /**
      * Получение пользователя по имени пользователя
-     *
      * @return пользователь
      */
     public User getByUsername(String username) {
@@ -55,9 +52,7 @@ public class UserService {
 
     /**
      * Получение пользователя по имени пользователя
-     * <p>
      * Нужен для Spring Security
-     *
      * @return пользователь
      */
     public UserDetailsService userDetailsService() {
@@ -66,7 +61,6 @@ public class UserService {
 
     /**
      * Получение текущего пользователя
-     *
      * @return текущий пользователь
      */
     public User getCurrentUser() {
@@ -78,13 +72,12 @@ public class UserService {
 
     /**
      * Выдача прав администратора текущему пользователю
-     * <p>
      * Нужен для демонстрации
      */
     @Deprecated
     public void getAdmin() {
-        var user = getCurrentUser();
-        user.setRole(Role.ROLE_ADMIN);
-        save(user);
+//        var user = getCurrentUser();
+//        user.setRole(Role.ROLE_ADMIN);
+//        save(user);
     }
 }
