@@ -18,7 +18,7 @@ public class CharacterController {
 
     @PostMapping("/create")
     public String createCharacter(@RequestBody CharacterRequest characterRequest){
-        //return characterService.createCharacter(characterRequest);
+        characterService.createCharacter(characterRequest);
         return "create";
     }
 
