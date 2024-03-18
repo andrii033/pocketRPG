@@ -24,4 +24,8 @@ public class GameCharacter {
     @JoinColumn(name = "users_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
+
 }
