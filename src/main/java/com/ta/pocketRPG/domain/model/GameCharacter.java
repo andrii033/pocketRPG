@@ -19,6 +19,7 @@ public class GameCharacter {
     private int inte=1;
     private int gold=1;
     private int res=0;
+    private int enemyId;
 
     @ManyToOne
     @JoinColumn(name = "users_id")

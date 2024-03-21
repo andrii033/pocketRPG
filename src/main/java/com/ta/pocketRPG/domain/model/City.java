@@ -24,6 +24,9 @@ public class City {
     @ManyToOne
     @JoinColumn(name = "list_of_cities_id")
     private ListOfCities listOfCities;
+
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    private List<Enemy> enemy = new ArrayList<>();
 }
 
 

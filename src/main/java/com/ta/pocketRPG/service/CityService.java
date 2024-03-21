@@ -2,6 +2,7 @@ package com.ta.pocketRPG.service;
 
 
 import com.ta.pocketRPG.domain.model.City;
+import com.ta.pocketRPG.domain.model.Enemy;
 import com.ta.pocketRPG.domain.model.ListOfCities;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.repository.ListOfCitiesRepository;
@@ -19,6 +20,8 @@ public class CityService {
     private CityRepository cityRepository;
     @Autowired
     private ListOfCitiesRepository listOfCitiesRepository;
+    @Autowired
+    private EnemyService enemyService;
 
     @PostConstruct
     public void initializeCity() {
@@ -35,6 +38,9 @@ public class CityService {
                 city.setXCoord(x);
                 city.setYCoord(y);
                 city.setTerrainType("Grass");
+
+                Enemy enemy = enemyService.createEnemy(city);
+                city.getEnemy().add(enemy);
 
                 // Set the ListOfCities for each City
                 city.setListOfCities(listOfCities);
