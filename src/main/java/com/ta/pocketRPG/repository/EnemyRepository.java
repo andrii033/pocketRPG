@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EnemyRepository extends JpaRepository<Enemy,Long> {
     Enemy save(Enemy enemy);
+    Enemy findEnemyById(Long id);
 }

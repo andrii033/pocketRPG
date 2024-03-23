@@ -3,6 +3,7 @@ package com.ta.pocketRPG.controller;
 
 import com.ta.pocketRPG.component.RequestRateLimiter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ta.pocketRPG.service.UserService;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/example")
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class ExampleController {
 
     @GetMapping
     public String example() {
+        log.info("Example");
         //return "Hello, world! "+ SecurityContextHolder.getContext().getAuthentication().getName();
         if (rateLimiter.allowRequest()) {
             // Process the request

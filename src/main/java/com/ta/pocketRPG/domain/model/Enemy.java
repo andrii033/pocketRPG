@@ -17,7 +17,6 @@ public class Enemy {
     private int hp=10;
 
     @ManyToOne
+    @JoinColumn(name = "city_id")
     private City city;
-
-
 }

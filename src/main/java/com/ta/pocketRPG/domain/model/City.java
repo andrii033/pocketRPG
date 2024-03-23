@@ -27,6 +27,15 @@ public class City {
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
     private List<Enemy> enemy = new ArrayList<>();
+
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", xCoord=" + xCoord +
+                ", yCoord=" + yCoord +
+                ", terrainType='" + terrainType + '\'' +
+                '}';
+    }
 }
 
 

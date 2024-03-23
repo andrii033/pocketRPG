@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CityService {
@@ -51,5 +52,8 @@ public class CityService {
 
         // Save all the City entities
         cityRepository.saveAll(cities);
+    }
+    public City getById(Long id){
+        return cityRepository.getById(id);
     }
 }
