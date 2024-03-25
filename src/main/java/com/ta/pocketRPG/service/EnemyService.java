@@ -17,6 +17,7 @@ public class EnemyService {
         enemy.setName("Enemy");
         enemy.setInte(1);
         enemy.setCity(city);
+        enemy.setHp(999990);
         return enemy;
     }
 
