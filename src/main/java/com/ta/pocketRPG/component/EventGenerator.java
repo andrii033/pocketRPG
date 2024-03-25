@@ -35,7 +35,8 @@ public class EventGenerator {
         for (var character : characterFightList) {
             enemy = enemyRepository.findEnemyById((long) character.getEnemyId()); //find enemy
             int temp = enemy.getHp();
-            enemy.setHp(enemy.getHp() - character.getStr()); //attack
+            character.setLatestDam(character.getStr());
+            enemy.setHp(enemy.getHp() - character.getLatestDam()); //attack
             character.addExp(temp - enemy.getHp());
             log.info("enemyHp " + enemy.getHp() + " char exp " + character.getExp());
             if (enemy.getHp() <= 0) {

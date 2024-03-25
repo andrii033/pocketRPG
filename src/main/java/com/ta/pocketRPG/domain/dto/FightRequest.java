@@ -7,5 +7,9 @@ import lombok.Setter;
 @Setter
 public class FightRequest {
     private String characterName;
-    private String characterHp;
+    private int characterHp;
+    private int characterLatestDam;
+    private String enemyName;
+    private int enemyHp;
+    private int enemyLatestDam;
 }

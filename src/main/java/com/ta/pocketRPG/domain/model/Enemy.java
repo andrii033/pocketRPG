@@ -15,6 +15,7 @@ public class Enemy {
     private int agi=1;
     private int inte=1;
     private int hp=10;
+    private int latestDam;
 
     @ManyToOne
     @JoinColumn(name = "city_id")

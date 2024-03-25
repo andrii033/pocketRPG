@@ -23,6 +23,7 @@ public class GameCharacter {
     private int enemyId;
     private long exp;
     private int lvl;
+    private int latestDam;
 
     @ManyToOne
     @JoinColumn(name = "users_id")
