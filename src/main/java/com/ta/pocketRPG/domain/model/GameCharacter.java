@@ -19,7 +19,10 @@ public class GameCharacter {
     private int inte=1;
     private int gold=1;
     private int res=0;
+    private int hp;
     private int enemyId;
+    private long exp;
+    private int lvl;
 
     @ManyToOne
     @JoinColumn(name = "users_id")
@@ -27,5 +30,9 @@ public class GameCharacter {
 
     @ManyToOne
     private City city;
+
+    public void addExp(int newExp){
+        exp+=newExp;
+    }
 
 }

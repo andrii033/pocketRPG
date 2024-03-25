@@ -1,7 +1,6 @@
 package com.ta.pocketRPG.service;
 
 import com.ta.pocketRPG.domain.dto.CharacterRequest;
-import com.ta.pocketRPG.domain.model.City;
 import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service

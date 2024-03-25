@@ -30,16 +30,15 @@ public class EventGenerator {
 
     @Scheduled(fixedRate = 1000)
     @Transactional
-    public void generateEvent(){
-        //log.info("Generating event every second...");
-        //log.info("city "+cityService.getById(1L));
+    public void generateEvent() {
         characterFightList = characterService.charactersWithEnemies();
-        for (var character: characterFightList)
-        {
-            enemy = enemyRepository.findEnemyById((long) character.getEnemyId());
-            enemy.setHp(enemy.getHp()-character.getStr());
-            log.info("enemyHp "+enemy.getHp());
-            if (enemy.getHp()<= 0){
+        for (var character : characterFightList) {
+            enemy = enemyRepository.findEnemyById((long) character.getEnemyId()); //find enemy
+            int temp = enemy.getHp();
+            enemy.setHp(enemy.getHp() - character.getStr()); //attack
+            character.addExp(temp - enemy.getHp());
+            log.info("enemyHp " + enemy.getHp() + " char exp " + character.getExp());
+            if (enemy.getHp() <= 0) {
                 character.setEnemyId(0);
                 log.info("you have defeated the enemy");
             }

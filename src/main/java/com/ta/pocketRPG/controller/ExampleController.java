@@ -16,7 +16,6 @@ import com.ta.pocketRPG.service.UserService;
 @RestController
 @RequestMapping("/example")
 @RequiredArgsConstructor
-
 public class ExampleController {
     private final UserService service;
 
