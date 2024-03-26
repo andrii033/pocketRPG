@@ -43,6 +43,7 @@ public class EventGenerator {
                 character.setEnemyId(0);
                 log.info("you have defeated the enemy");
             }
+            enemy.setCharId(character.getId());
         }
         characterService.saveAll(characterFightList);
     }

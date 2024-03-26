@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CityService {
@@ -26,13 +25,21 @@ public class CityService {
 
     @PostConstruct
     public void initializeCity() {
-        ListOfCities listOfCities = new ListOfCities();
-        listOfCities.setName("Start city");
+        List<ListOfCities> listOfCities = new ArrayList<>();
+
+        ListOfCities startingCity = new ListOfCities();
+        startingCity.setName("Starting city");
+        listOfCities.add(startingCity);
+
+        ListOfCities battleField = new ListOfCities();
+        battleField.setName("Battlefield");
+        listOfCities.add(battleField);
 
         // Save the ListOfCities first
-        listOfCities = listOfCitiesRepository.save(listOfCities);
+        listOfCitiesRepository.saveAll(listOfCities);
 
-        List<City> cities = new ArrayList<>();
+
+        List<City> coordStartingCity = new ArrayList<>();
         for (int x = 0; x < 20; x++) {
             for (int y = 0; y < 20; y++) {
                 City city = new City();
@@ -44,14 +51,30 @@ public class CityService {
                 city.getEnemy().add(enemy);
 
                 // Set the ListOfCities for each City
-                city.setListOfCities(listOfCities);
+                city.setListOfCities(battleField);
 
-                cities.add(city);
+                coordStartingCity.add(city);
+            }
+        }
+        cityRepository.saveAll(coordStartingCity);
+
+        List<City> coordBattleField = new ArrayList<>();
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                City city = new City();
+                city.setXCoord(x);
+                city.setYCoord(y);
+                city.setTerrainType("city streets");
+
+                // Set the ListOfCities for each City
+                city.setListOfCities(startingCity);
+
+                coordBattleField.add(city);
             }
         }
 
         // Save all the City entities
-        cityRepository.saveAll(cities);
+        cityRepository.saveAll(coordBattleField);
     }
     public City getById(Long id){
         return cityRepository.getById(id);

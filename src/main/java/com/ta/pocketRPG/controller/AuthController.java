@@ -24,10 +24,10 @@ public class AuthController {
         return authenticationService.signUp(request);
     }
 
-
     @PostMapping("/sign-in")
     public JwtAuthenticationResponse signIn(@RequestBody @Valid SignInRequest request) {
         return authenticationService.signIn(request);
     }
+
 }
 

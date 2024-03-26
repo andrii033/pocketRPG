@@ -69,6 +69,7 @@ public class CharacterController {
                     fightRequest.setEnemyName(enemy.getName());
                     fightRequest.setEnemyHp(enemy.getHp());
                     fightRequest.setEnemyLatestDam(enemy.getLatestDam());
+                    fightRequest.setEnemyId(gameCharacter.getEnemyId());
                     return ResponseEntity.ok(fightRequest);
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Enemy not found");

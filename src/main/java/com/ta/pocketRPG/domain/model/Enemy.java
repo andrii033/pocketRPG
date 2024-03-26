@@ -16,8 +16,8 @@ public class Enemy {
     private int inte=1;
     private int hp=10;
     private int latestDam;
+    private Long charId;
 
     @ManyToOne
-    @JoinColumn(name = "city_id")
     private City city;
 }
