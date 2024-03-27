@@ -1,0 +1,21 @@
+localhost:8080/auth/sign-up
+request example:
+{
+	"username": "newuser",
+    "password": "12345678",
+    "email": "user@example.com"
+}
+response example:
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9VU0VSIiwiaWQiOjEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsInN"
+}
+
+
+localhost:8080/auth/sign-in
+{
+    "username": "newuser",
+    "password": "12345678"
+}
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9VU0VSIiwiaWQiOjEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsInN"
+}
