@@ -23,11 +23,11 @@ public class CharacterService {
     public GameCharacter createCharacter(CharacterRequest characterRequest) {
         GameCharacter gameCharacter = new GameCharacter();
         gameCharacter.setCharacterName(characterRequest.getCharacterName());
-        gameCharacter.setStr(characterRequest.getStr());
-        gameCharacter.setAgi(characterRequest.getAgi());
-        gameCharacter.setInte(characterRequest.getInte());
-        gameCharacter.setGold(characterRequest.getGold());
-        gameCharacter.setRes(characterRequest.getRes());
+        gameCharacter.setStr(5);
+        gameCharacter.setAgi(5);
+        gameCharacter.setInte(5);
+        gameCharacter.setGold(1);
+        gameCharacter.setRes(0);
         gameCharacter.setUser(userService.getCurrentUser());
         gameCharacter.setEnemyId(1);
 

@@ -34,28 +34,17 @@ public class CharacterController {
     private RequestRateLimiter rateLimiter;
 
     @PostMapping("/create")
-    public String createCharacter(@RequestBody CharacterRequest characterRequest) {
-        characterService.createCharacter(characterRequest);
-        return "create";
+    public ResponseEntity<?> createCharacter(@RequestBody CharacterRequest characterRequest) {
+        try {
+            characterService.createCharacter(characterRequest);
+            return ResponseEntity.ok("Character created successfully.");
+        } catch (Exception e) {
+            String errorMessage = "Failed to create character: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+        }
     }
 
-    //    @PostMapping("/fight")
-//    public FightRequest fight(@RequestBody FightRequest fightRequest){
-//        if (rateLimiter.allowRequest()) {
-//            GameCharacter gameCharacter=characterRepository.findGameCharacterByUser(userService.getCurrentUser());
-//            Enemy enemy= enemyService.findEnemyById((long) gameCharacter.getEnemyId());
-//            fightRequest.setCharacterName(gameCharacter.getCharacterName());
-//            fightRequest.setCharacterLatestDam(gameCharacter.getLatestDam());
-//            fightRequest.setCharacterHp(gameCharacter.getHp());
-//            fightRequest.setEnemyName(enemy.getName());
-//            fightRequest.setEnemyHp(enemy.getHp());
-//            fightRequest.setEnemyLatestDam(enemy.getLatestDam());
-//            return fightRequest;
-//        } else {
-//            // Return an error response or handle the rate limit exceeded scenario
-//            return fightRequest;
-//        }
-//    }
+
     @PostMapping("/fight")
     public ResponseEntity<?> fight(@RequestBody FightRequest fightRequest) {
         if (rateLimiter.allowRequest()) {

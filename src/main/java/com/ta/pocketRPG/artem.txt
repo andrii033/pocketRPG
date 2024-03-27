@@ -19,3 +19,9 @@ localhost:8080/auth/sign-in
 {
     "token": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9VU0VSIiwiaWQiOjEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsInN"
 }
+
+localhost:8080/character/create
+{
+    "characterName": "New Character"
+}
+Character created successfully.
