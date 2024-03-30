@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class CharacterRequest {
     private String characterName;
+    private Long id;
     private int str;
     private int agi;
     private int inte;

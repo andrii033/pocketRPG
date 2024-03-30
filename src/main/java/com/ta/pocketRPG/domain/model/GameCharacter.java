@@ -26,7 +26,6 @@ public class GameCharacter {
     private int latestDam;
 
     @ManyToOne
-    @JoinColumn(name = "users_id")
     private User user;
 
     @ManyToOne

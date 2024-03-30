@@ -25,3 +25,45 @@ localhost:8080/character/create
     "characterName": "New Character"
 }
 Character created successfully.
+
+get localhost:8080/character/chooseCharacter
+{
+
+}
+
+[
+    {
+        "characterName": "New Character",
+        "id": 1,
+        "str": 5,
+        "agi": 5,
+        "inte": 5,
+        "gold": 1,
+        "res": 0
+    },
+    {
+        "characterName": "New Character",
+        "id": 2,
+        "str": 5,
+        "agi": 5,
+        "inte": 5,
+        "gold": 1,
+        "res": 0
+    }
+]
+
+post localhost:8080/character/chooseCharacter
+{
+    "id": "1"
+}
+[
+    {
+        "terrainType": "city streets",
+        "xcoord": 0,
+        "ycoord": 0
+    },
+    {
+        "terrainType": "city streets",
+        "xcoord": 0,
+        "ycoord": 1
+    },............
