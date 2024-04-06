@@ -1,6 +1,7 @@
 package com.ta.pocketRPG.controller;
 
 import com.ta.pocketRPG.component.RequestRateLimiter;
+import com.ta.pocketRPG.domain.dto.CharacterMove;
 import com.ta.pocketRPG.domain.dto.CharacterRequest;
 import com.ta.pocketRPG.domain.dto.CityRequest;
 import com.ta.pocketRPG.domain.model.City;
@@ -11,6 +12,7 @@ import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.service.CharacterService;
 import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/character")
 public class CharacterController {
@@ -103,7 +106,25 @@ public class CharacterController {
     }
 
     @PostMapping("/move")
-    private ResponseEntity<?> moveCharacter(){
+    private ResponseEntity<?> moveCharacter(@RequestBody CharacterMove characterMove){
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+
+        log.info("move "+gameCharacter.getCity().getXCoord()+" "+gameCharacter.getCity().getYCoord());
+
+        City city = gameCharacter.getCity();
+
+        // If the city does not exist, create a new one
+        if(city == null) {
+            city = new City();
+        }
+
+        city.setXCoord(characterMove.getX());
+        city.setYCoord(characterMove.getY());
+
+        gameCharacter.setCity(city);
+
+        characterRepository.save(gameCharacter);
 
         return ResponseEntity.ok("ok");
     }
