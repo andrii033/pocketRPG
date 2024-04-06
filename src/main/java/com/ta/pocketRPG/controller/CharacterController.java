@@ -47,7 +47,7 @@ public class CharacterController {
         }
     }
 
-    @GetMapping("/chooseCharacter")
+    @GetMapping("/choose")
     public ResponseEntity<?> chooseCharacter() {
         List<CharacterRequest> listCharacterRequest = createCharacterRequestList();
         if (!listCharacterRequest.isEmpty()) {
@@ -57,7 +57,7 @@ public class CharacterController {
         }
     }
 
-    @PostMapping("/chooseCharacter")
+    @PostMapping("/choose")
     public ResponseEntity<?> chooseCharacter(@RequestBody CharacterRequest characterRequest) {
         System.out.println(characterRequest.getId());
         User user = userService.getCurrentUser();
@@ -100,6 +100,12 @@ public class CharacterController {
             }
         }
         return listCharacterRequest;
+    }
+
+    @PostMapping("/move")
+    private ResponseEntity<?> moveCharacter(){
+
+        return ResponseEntity.ok("ok");
     }
 
 
