@@ -6,6 +6,7 @@ import com.ta.pocketRPG.domain.dto.CharacterRequest;
 import com.ta.pocketRPG.domain.dto.CityRequest;
 import com.ta.pocketRPG.domain.model.City;
 import com.ta.pocketRPG.domain.model.GameCharacter;
+import com.ta.pocketRPG.domain.model.ListOfCities;
 import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
@@ -69,7 +70,6 @@ public class CharacterController {
 
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
         System.out.println("selectedCharacterID "+gameCharacter.toString());
-        System.out.println("id "+gameCharacter.getCity().getListOfCities().getId());
         List<City> cities = cityRepository.findByListOfCitiesId(gameCharacter.getCity().getListOfCities().getId());
         List<CityRequest> cityRequests = new ArrayList<>();
         for (City city : cities) {
@@ -99,6 +99,8 @@ public class CharacterController {
                 characterRequest.setInte(character.getInte());
                 characterRequest.setGold(character.getGold());
                 characterRequest.setAgi(character.getAgi());
+                characterRequest.setXCoord(character.getCity().getXCoord());
+                characterRequest.setYCoord(character.getCity().getYCoord());
                 listCharacterRequest.add(characterRequest);
             }
         }
@@ -110,24 +112,26 @@ public class CharacterController {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
-        log.info("move "+gameCharacter.getCity().getXCoord()+" "+gameCharacter.getCity().getYCoord());
-
-        City city = gameCharacter.getCity();
-
-        // If the city does not exist, create a new one
-        if(city == null) {
-            city = new City();
+        log.info("request "+characterMove.getX()+" "+characterMove.getY());
+        
+        Long listOfCitiesId = gameCharacter.getCity().getListOfCities().getId();
+        List<City> listOfCity = cityRepository.findByListOfCitiesId(listOfCitiesId);
+        City targetCity = null;
+        for(City city:listOfCity){
+            if(city.getXCoord() == characterMove.getX() && city.getYCoord() == characterMove.getY()){
+                targetCity=city;
+                break;
+            }
         }
-
-        city.setXCoord(characterMove.getX());
-        city.setYCoord(characterMove.getY());
-
-        gameCharacter.setCity(city);
-
+        gameCharacter.setCity(targetCity);
         characterRepository.save(gameCharacter);
 
-        return ResponseEntity.ok("ok");
+//        CharacterMove move = new CharacterMove();
+//        move.setX(targetCity.getXCoord());
+//        move.setY(targetCity.getYCoord());
+        return ResponseEntity.ok(characterMove);
     }
+
 
 
 }

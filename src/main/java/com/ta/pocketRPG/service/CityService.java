@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class CityService {
@@ -40,12 +41,19 @@ public class CityService {
 
 
         List<City> coordStartingCity = new ArrayList<>();
-        for (int x = 0; x < 20; x++) {
-            for (int y = 0; y < 20; y++) {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
                 City city = new City();
                 city.setXCoord(x);
                 city.setYCoord(y);
-                city.setTerrainType("Grass");
+                Random random = new Random();
+                int random_number = random.nextInt(3) + 1;
+                if(random_number == 3)
+                {
+                    city.setTerrainType("Stone");
+                }else {
+                    city.setTerrainType("Grass");
+                }
 
                 Enemy enemy = enemyService.createEnemy(city);
                 city.getEnemy().add(enemy);
