@@ -116,6 +116,7 @@ public class CharacterController {
         
         Long listOfCitiesId = gameCharacter.getCity().getListOfCities().getId();
         List<City> listOfCity = cityRepository.findByListOfCitiesId(listOfCitiesId);
+
         City targetCity = null;
         for(City city:listOfCity){
             if(city.getXCoord() == characterMove.getX() && city.getYCoord() == characterMove.getY()){
@@ -126,9 +127,6 @@ public class CharacterController {
         gameCharacter.setCity(targetCity);
         characterRepository.save(gameCharacter);
 
-//        CharacterMove move = new CharacterMove();
-//        move.setX(targetCity.getXCoord());
-//        move.setY(targetCity.getYCoord());
         return ResponseEntity.ok(characterMove);
     }
 
