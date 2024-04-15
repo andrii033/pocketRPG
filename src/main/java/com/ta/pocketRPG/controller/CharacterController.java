@@ -4,10 +4,7 @@ import com.ta.pocketRPG.component.RequestRateLimiter;
 import com.ta.pocketRPG.domain.dto.CharacterMove;
 import com.ta.pocketRPG.domain.dto.CharacterRequest;
 import com.ta.pocketRPG.domain.dto.CityRequest;
-import com.ta.pocketRPG.domain.model.City;
-import com.ta.pocketRPG.domain.model.GameCharacter;
-import com.ta.pocketRPG.domain.model.ListOfCities;
-import com.ta.pocketRPG.domain.model.User;
+import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.service.CharacterService;
@@ -69,7 +66,7 @@ public class CharacterController {
         userService.save(user);
 
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        System.out.println("selectedCharacterID "+gameCharacter.toString());
+        System.out.println("selectedCharacterID " + gameCharacter.toString());
         List<City> cities = cityRepository.findByListOfCitiesId(gameCharacter.getCity().getListOfCities().getId());
         List<CityRequest> cityRequests = new ArrayList<>();
         for (City city : cities) {
@@ -108,28 +105,38 @@ public class CharacterController {
     }
 
     @PostMapping("/move")
-    private ResponseEntity<?> moveCharacter(@RequestBody CharacterMove characterMove){
+    private ResponseEntity<?> moveCharacter(@RequestBody CharacterMove characterMove) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
-        log.info("request "+characterMove.getX()+" "+characterMove.getY());
-        
+        log.info("request " + characterMove.getX() + " " + characterMove.getY());
+
         Long listOfCitiesId = gameCharacter.getCity().getListOfCities().getId();
         List<City> listOfCity = cityRepository.findByListOfCitiesId(listOfCitiesId);
 
         City targetCity = null;
-        for(City city:listOfCity){
-            if(city.getXCoord() == characterMove.getX() && city.getYCoord() == characterMove.getY()){
-                targetCity=city;
-                break;
+        int currentX = gameCharacter.getCity().getXCoord();
+        int currentY = gameCharacter.getCity().getYCoord();
+        int targetX = characterMove.getX();
+        int targetY = characterMove.getY();
+        if (Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1)
+            for (City city : listOfCity) {
+                if (city.getXCoord() == characterMove.getX() && city.getYCoord() == characterMove.getY() &&
+                        TerrainTypes.PASSABLE_TERRAIN_TYPES.contains(city.getTerrainType())) {
+                    targetCity = city;
+                    gameCharacter.setCity(targetCity);
+                    characterRepository.save(gameCharacter);
+                    break;
+
+                }
             }
+        if (targetCity == null) {
+            characterMove.setY(gameCharacter.getCity().getYCoord());
+            characterMove.setX(gameCharacter.getCity().getXCoord());
         }
-        gameCharacter.setCity(targetCity);
-        characterRepository.save(gameCharacter);
 
         return ResponseEntity.ok(characterMove);
     }
-
 
 
 }
