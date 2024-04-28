@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                 // Configure access to endpoints
                 .authorizeHttpRequests(request -> request
                         // Permit all for specific paths
-                        .antMatchers("/auth/**", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
+                        .antMatchers("/auth/**", "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**","/example").permitAll()
                         // Require ADMIN role for specific paths
                         .antMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
