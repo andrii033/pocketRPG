@@ -76,9 +76,17 @@ public class CharacterController {
             cityRequest.setYCoord(city.getYCoord());
             cityRequest.setTerrainType(city.getTerrainType());
 
+            List<String> enemies = new ArrayList<>();
+            for(var enemy:city.getEnemy())
+            {
+                enemies.add(enemy.getName());
+            }
+            cityRequest.setEnemy(enemies);
+            //cityRequest.setEnemy();
+
             cityRequests.add(cityRequest);
         }
-
+        
         return ResponseEntity.ok(cityRequests);
     }
 

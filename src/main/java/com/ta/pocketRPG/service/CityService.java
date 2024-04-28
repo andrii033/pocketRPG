@@ -52,11 +52,14 @@ public class CityService {
                 {
                     city.setTerrainType("Stone");
                 }else {
+                    if (random_number==1){
+                        Enemy enemy = enemyService.createEnemy(city);
+                        city.getEnemy().add(enemy);
+                        Enemy enemy1 = enemyService.createEnemy(city);
+                        city.getEnemy().add(enemy1);
+                    }
                     city.setTerrainType("Grass");
                 }
-
-                Enemy enemy = enemyService.createEnemy(city);
-                city.getEnemy().add(enemy);
 
                 // Set the ListOfCities for each City
                 city.setListOfCities(battleField);
