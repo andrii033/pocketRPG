@@ -1,6 +1,5 @@
 package com.ta.pocketRPG.controller;
 
-import com.ta.pocketRPG.component.RequestRateLimiter;
 import com.ta.pocketRPG.domain.dto.CharacterMove;
 import com.ta.pocketRPG.domain.dto.CharacterRequest;
 import com.ta.pocketRPG.domain.dto.CityRequest;
@@ -8,7 +7,6 @@ import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.service.CharacterService;
-import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -30,10 +30,6 @@ public class CharacterController {
     private CharacterRepository characterRepository;
     @Autowired
     private UserService userService;
-    @Autowired
-    private EnemyService enemyService;
-    @Autowired
-    private RequestRateLimiter rateLimiter;
     @Autowired
     private CityRepository cityRepository;
 
@@ -66,7 +62,7 @@ public class CharacterController {
         userService.save(user);
 
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        System.out.println("selectedCharacterID " + gameCharacter.toString());
+        System.out.println("selectedCharacterID " + gameCharacter);
         List<City> cities = cityRepository.findByListOfCitiesId(gameCharacter.getCity().getListOfCities().getId());
         List<CityRequest> cityRequests = new ArrayList<>();
         for (City city : cities) {
@@ -76,13 +72,12 @@ public class CharacterController {
             cityRequest.setYCoord(city.getYCoord());
             cityRequest.setTerrainType(city.getTerrainType());
 
-            List<String> enemies = new ArrayList<>();
+            Map<String,String> enemies = new HashMap<>();
             for(var enemy:city.getEnemy())
             {
-                enemies.add(enemy.getName());
+                enemies.put(enemy.getName(),enemy.getId().toString());
             }
-            cityRequest.setEnemy(enemies);
-            //cityRequest.setEnemy();
+            cityRequest.setEnemies(enemies);
 
             cityRequests.add(cityRequest);
         }
