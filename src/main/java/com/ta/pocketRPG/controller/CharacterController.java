@@ -6,6 +6,7 @@ import com.ta.pocketRPG.domain.dto.CityRequest;
 import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
+import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
 import com.ta.pocketRPG.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,8 @@ public class CharacterController {
     private UserService userService;
     @Autowired
     private CityRepository cityRepository;
+    @Autowired
+    private EnemyRepository enemyRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createCharacter(@RequestBody CharacterRequest characterRequest) {
@@ -72,16 +75,15 @@ public class CharacterController {
             cityRequest.setYCoord(city.getYCoord());
             cityRequest.setTerrainType(city.getTerrainType());
 
-            Map<String,String> enemies = new HashMap<>();
-            for(var enemy:city.getEnemy())
-            {
-                enemies.put(enemy.getName(),enemy.getId().toString());
+            Map<String, String> enemies = new HashMap<>();
+            for (var enemy : city.getEnemy()) {
+                enemies.put(enemy.getName(), enemy.getId().toString());
             }
             cityRequest.setEnemies(enemies);
 
             cityRequests.add(cityRequest);
         }
-        
+
         return ResponseEntity.ok(cityRequests);
     }
 
@@ -142,13 +144,23 @@ public class CharacterController {
     }
 
     @PostMapping("/selectTarget")
-    private ResponseEntity<?> selectTarget(@RequestBody Integer id){
-        log.info("select target "+id);
+    private ResponseEntity<?> selectTarget(@RequestBody Integer id) {
+        log.info("select target " + id);
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        gameCharacter.setEnemyId(id);
-        characterRepository.save(gameCharacter);
-        return ResponseEntity.ok("ok");
-    }
 
+        Enemy enemy = enemyRepository.findEnemyById(Long.valueOf(id));
+        int currentX = gameCharacter.getCity().getXCoord();
+        int currentY = gameCharacter.getCity().getYCoord();
+        int targetX = enemy.getCity().getXCoord();
+        int targetY = enemy.getCity().getYCoord();
+        if (Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1) {
+            gameCharacter.setEnemyId(id);
+            characterRepository.save(gameCharacter);
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.ok("Enemy is not within range");
+        }
+
+    }
 }
