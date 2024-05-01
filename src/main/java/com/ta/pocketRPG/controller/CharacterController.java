@@ -112,7 +112,7 @@ public class CharacterController {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
-        log.info("request " + characterMove.getX() + " " + characterMove.getY());
+        log.info("character move " + characterMove.getX() + " " + characterMove.getY());
 
         Long listOfCitiesId = gameCharacter.getCity().getListOfCities().getId();
         List<City> listOfCity = cityRepository.findByListOfCitiesId(listOfCitiesId);
@@ -141,5 +141,14 @@ public class CharacterController {
         return ResponseEntity.ok(characterMove);
     }
 
+    @PostMapping("/selectTarget")
+    private ResponseEntity<?> selectTarget(@RequestBody Integer id){
+        log.info("select target "+id);
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        gameCharacter.setEnemyId(id);
+        characterRepository.save(gameCharacter);
+        return ResponseEntity.ok("ok");
+    }
 
 }
