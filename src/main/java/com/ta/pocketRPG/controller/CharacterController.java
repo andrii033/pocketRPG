@@ -76,8 +76,10 @@ public class CharacterController {
             cityRequest.setTerrainType(city.getTerrainType());
 
             Map<String, String> enemies = new HashMap<>();
+
+            log.info("enemies "+city.getEnemy().toString());
             for (var enemy : city.getEnemy()) {
-                enemies.put(enemy.getName(), enemy.getId().toString());
+                enemies.put( enemy.getId().toString(),enemy.getName());
             }
             cityRequest.setEnemies(enemies);
 
