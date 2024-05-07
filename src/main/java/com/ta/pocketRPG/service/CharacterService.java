@@ -29,7 +29,7 @@ public class CharacterService {
         gameCharacter.setGold(1);
         gameCharacter.setRes(0);
         gameCharacter.setUser(userService.getCurrentUser());
-        gameCharacter.setEnemyId(1);
+        //gameCharacter.setEnemyId(1);
 
         User currentUser = userService.getCurrentUser();
         gameCharacter.setUser(currentUser);

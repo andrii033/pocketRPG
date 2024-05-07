@@ -4,6 +4,7 @@ import com.ta.pocketRPG.domain.dto.JwtAuthenticationResponse;
 import com.ta.pocketRPG.domain.dto.SignInRequest;
 import com.ta.pocketRPG.domain.dto.SignUpRequest;
 import com.ta.pocketRPG.domain.model.Role;
+import com.ta.pocketRPG.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,12 +19,13 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserRepository repository;
 
     /**
-     * Регистрация пользователя
+     * User registration
      *
-     * @param request данные пользователя
-     * @return токен
+     * @param request user data
+     * @return token
      */
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
 
@@ -34,17 +36,21 @@ public class AuthenticationService {
                 .role(Role.ROLE_USER)
                 .build();
 
-        userService.create(user);
+        if (!repository.existsByUsername(user.getUsername()) && !repository.existsByEmail(user.getEmail())) {
+            userService.create(user);
+            var jwt = jwtService.generateToken(user);
+            return new JwtAuthenticationResponse(jwt);
+        } else {
+            return new JwtAuthenticationResponse();
+        }
 
-        var jwt = jwtService.generateToken(user);
-        return new JwtAuthenticationResponse(jwt);
     }
 
     /**
-     * Аутентификация пользователя
+     * User authentication
      *
-     * @param request данные пользователя
-     * @return токен
+     * @param request user data
+     * @return token
      */
     public JwtAuthenticationResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

@@ -13,4 +13,6 @@ public class CharacterRequest {
     private int inte;
     private int gold;
     private int res;
+    private int xCoord;
+    private int yCoord;
 }
