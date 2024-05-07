@@ -77,7 +77,7 @@ public class CharacterController {
 
             Map<String, String> enemies = new HashMap<>();
 
-            log.info("enemies "+city.getEnemy().toString());
+            //log.info("enemies "+city.getEnemy().toString());
             for (var enemy : city.getEnemy()) {
                 enemies.put( enemy.getId().toString(),enemy.getName());
             }
