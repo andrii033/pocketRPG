@@ -20,7 +20,7 @@ public class GameCharacter {
     private int gold=1;
     private int res=0;
     private int hp;
-    private int enemyId;
+    private Integer enemyId;
     private long exp;
     private int lvl;
     private int latestDam;

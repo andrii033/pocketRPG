@@ -3,6 +3,7 @@ package com.ta.pocketRPG.controller;
 import com.ta.pocketRPG.domain.dto.CharacterMove;
 import com.ta.pocketRPG.domain.dto.CharacterRequest;
 import com.ta.pocketRPG.domain.dto.CityRequest;
+import com.ta.pocketRPG.domain.dto.FightRequest;
 import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
@@ -59,13 +60,13 @@ public class CharacterController {
 
     @PostMapping("/choose")
     public ResponseEntity<?> chooseCharacter(@RequestBody CharacterRequest characterRequest) {
-        System.out.println(characterRequest.getId());
+        //System.out.println(characterRequest.getId());
         User user = userService.getCurrentUser();
         user.setSelectedCharacterId(characterRequest.getId());
         userService.save(user);
 
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        System.out.println("selectedCharacterID " + gameCharacter);
+        //System.out.println("selectedCharacterID " + gameCharacter);
         List<City> cities = cityRepository.findByListOfCitiesId(gameCharacter.getCity().getListOfCities().getId());
         List<CityRequest> cityRequests = new ArrayList<>();
         for (City city : cities) {
@@ -79,7 +80,7 @@ public class CharacterController {
 
             //log.info("enemies "+city.getEnemy().toString());
             for (var enemy : city.getEnemy()) {
-                enemies.put( enemy.getId().toString(),enemy.getName());
+                enemies.put(enemy.getId().toString(), enemy.getName());
             }
             cityRequest.setEnemies(enemies);
 
@@ -116,7 +117,7 @@ public class CharacterController {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
-        log.info("character move " + characterMove.getX() + " " + characterMove.getY());
+        //log.info("character move " + characterMove.getX() + " " + characterMove.getY());
 
         Long listOfCitiesId = gameCharacter.getCity().getListOfCities().getId();
         List<City> listOfCity = cityRepository.findByListOfCitiesId(listOfCitiesId);
@@ -163,6 +164,31 @@ public class CharacterController {
         } else {
             return ResponseEntity.ok("Enemy is not within range");
         }
-
     }
+
+    @GetMapping("/fight")
+    private ResponseEntity<?> fightData() {
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        FightRequest fightRequest = new FightRequest();
+        fightRequest.setCharacterName(gameCharacter.getCharacterName());
+        fightRequest.setCharacterHp(gameCharacter.getHp());
+        fightRequest.setCharacterLatestDam(gameCharacter.getLatestDam());
+
+        Integer enemyId = gameCharacter.getEnemyId();
+        if (enemyId != null) {
+            fightRequest.setEnemyId(enemyId); // Convert Integer to int
+            Enemy enemy = enemyRepository.findEnemyById((long) enemyId);
+            fightRequest.setEnemyHp(enemy.getHp());
+            fightRequest.setEnemyLatestDam(enemy.getLatestDam());
+        } else {
+            fightRequest.setEnemyId(0);
+            fightRequest.setEnemyHp(0);
+            fightRequest.setEnemyLatestDam(0);
+        }
+
+        return ResponseEntity.ok(fightRequest);
+    }
+
+
 }
