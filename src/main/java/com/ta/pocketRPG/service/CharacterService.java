@@ -20,14 +20,17 @@ public class CharacterService {
     @Autowired
     private CityService cityService;
 
-    public GameCharacter createCharacter(CharacterRequest characterRequest) {
+    public void createCharacter(CharacterRequest characterRequest) {
         GameCharacter gameCharacter = new GameCharacter();
         gameCharacter.setCharacterName(characterRequest.getCharacterName());
-        gameCharacter.setStr(5);
-        gameCharacter.setAgi(5);
-        gameCharacter.setInte(5);
+        gameCharacter.setStr(1);
+        gameCharacter.setAgi(1);
+        gameCharacter.setInte(1);
         gameCharacter.setGold(1);
         gameCharacter.setRes(0);
+        gameCharacter.setExp(0);
+        gameCharacter.setMainPoints(0);
+        gameCharacter.setSecondaryPoints(0);
         gameCharacter.setUser(userService.getCurrentUser());
         //gameCharacter.setEnemyId(1);
 
@@ -37,12 +40,9 @@ public class CharacterService {
         gameCharacter.setCity(cityService.getById(1L));
 
 
-        return characterRepository.save(gameCharacter);
+        characterRepository.save(gameCharacter);
     }
 
-    public List<GameCharacter> getAllCharacters() {
-        return characterRepository.findAll();
-    }
 
     public List<GameCharacter> charactersWithEnemies() {
         return characterRepository.findByEnemyIdNot(0);
