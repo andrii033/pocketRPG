@@ -177,14 +177,12 @@ public class CharacterController {
 
         Integer enemyId = gameCharacter.getEnemyId();
         if (enemyId != null) {
-            fightRequest.setEnemyId(enemyId); // Convert Integer to int
+            fightRequest.setEnemyId(enemyId);
             Enemy enemy = enemyRepository.findEnemyById((long) enemyId);
             fightRequest.setEnemyHp(enemy.getHp());
             fightRequest.setEnemyLatestDam(enemy.getLatestDam());
         } else {
             fightRequest.setEnemyId(0);
-            fightRequest.setEnemyHp(0);
-            fightRequest.setEnemyLatestDam(0);
         }
 
         return ResponseEntity.ok(fightRequest);
