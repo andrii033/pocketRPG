@@ -10,39 +10,39 @@ import javax.persistence.*;
 public class GameCharacter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Getter
     String characterName;
-    int str;
-    int agi;
-    int inte;
+    private int str;
+    private int agi;
+    private int inte;
 
-    int physicalHarm;
-    int armorPiercing;
-    int reduceBlockDam;
-    int maxHealth;
-    int critChance;
-    int attackSpeed;
-    int avoidance;
-    int blockChance;
-    int magicDam;
-    int magicCritChance;
-    int manaRegen;
-    int maxMana;
+    private int physicalHarm;
+    private int armorPiercing;
+    private int reduceBlockDam;
+    private int maxHealth;
+    private int critChance;
+    private int attackSpeed;
+    private int avoidance;
+    private int blockChance;
+    private int magicDam;
+    private int magicCritChance;
+    private int manaRegen;
+    private int maxMana;
 
-    int gold;
-    int res;
-    int hp;
-    int mana;
+    private int gold;
+    private int res;
+    private int hp;
+    private int mana;
 
-    int mainPoints;
-    int secondaryPoints;
-    Integer enemyId;
-    long exp;
-    int lvl;
-    int latestDam;
-    int damageDone;
+    private int mainPoints;
+    private int secondaryPoints;
+    private Integer enemyId;
+    private long exp;
+    private int lvl;
+    private int latestDam;
+    private int damageDone;
 
 
 

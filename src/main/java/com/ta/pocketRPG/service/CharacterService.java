@@ -26,13 +26,25 @@ public class CharacterService {
         gameCharacter.setStr(1);
         gameCharacter.setAgi(1);
         gameCharacter.setInte(1);
+        gameCharacter.setPhysicalHarm(1);
+        gameCharacter.setArmorPiercing(1);
+        gameCharacter.setReduceBlockDam(1);
+        gameCharacter.setMaxHealth(1);
+        gameCharacter.setMaxHealth(1);
+        gameCharacter.setCritChance(1);
+        gameCharacter.setAttackSpeed(1);
+        gameCharacter.setAvoidance(1);
+        gameCharacter.setBlockChance(1);
+        gameCharacter.setMagicDam(1);
+        gameCharacter.setMagicCritChance(1);
+        gameCharacter.setManaRegen(1);
+        gameCharacter.setMaxMana(1);
         gameCharacter.setGold(1);
         gameCharacter.setRes(0);
         gameCharacter.setExp(0);
         gameCharacter.setMainPoints(0);
         gameCharacter.setSecondaryPoints(0);
         gameCharacter.setUser(userService.getCurrentUser());
-        //gameCharacter.setEnemyId(1);
 
         User currentUser = userService.getCurrentUser();
         gameCharacter.setUser(currentUser);
