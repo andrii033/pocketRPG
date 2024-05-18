@@ -2,9 +2,12 @@ package com.ta.pocketRPG.controller;
 
 
 import com.ta.pocketRPG.component.RequestRateLimiter;
+import com.ta.pocketRPG.domain.dto.FightRequest;
+import com.ta.pocketRPG.domain.dto.MyRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,16 +26,21 @@ public class ExampleController {
     private RequestRateLimiter rateLimiter;
 
     @GetMapping
-    public String example() {
+    public ResponseEntity<?> example() {
         log.info("Example");
-        //return "Hello, world! "+ SecurityContextHolder.getContext().getAuthentication().getName();
-        if (rateLimiter.allowRequest()) {
-            // Process the request
-            return "Request processed successfully";
-        } else {
-            // Return an error response or handle the rate limit exceeded scenario
-            return "Rate limit exceeded. Please try again later.";
-        }
+
+        MyRequest myRequest = new MyRequest();
+        myRequest.setCharacterName("name");
+        myRequest.setCharacterHp(11);
+        return ResponseEntity.ok(myRequest);
+
+//        if (rateLimiter.allowRequest()) {
+//            // Process the request
+//            return "Request processed successfully";
+//        } else {
+//            // Return an error response or handle the rate limit exceeded scenario
+//            return "Rate limit exceeded. Please try again later.";
+//        }
     }
 
     @GetMapping("/admin")
