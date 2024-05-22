@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ta.pocketRPG.service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/example")
@@ -29,10 +32,15 @@ public class ExampleController {
     public ResponseEntity<?> example() {
         log.info("Example");
 
-        MyRequest myRequest = new MyRequest();
-        myRequest.setCharacterName("name");
-        myRequest.setCharacterHp(11);
-        return ResponseEntity.ok(myRequest);
+
+        List<MyRequest> listRequest = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            MyRequest myRequest = new MyRequest();
+            myRequest.setCharacterName("name "+i);
+            myRequest.setCharacterHp(11+i);
+            listRequest.add(myRequest);
+        }
+        return ResponseEntity.ok(listRequest);
 
 //        if (rateLimiter.allowRequest()) {
 //            // Process the request
