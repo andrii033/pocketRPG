@@ -5,7 +5,6 @@ import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +12,15 @@ import java.util.List;
 @Slf4j
 @Service
 public class CharacterService {
-    @Autowired
-    private CharacterRepository characterRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CityService cityService;
+    private final CharacterRepository characterRepository;
+    private final UserService userService;
+    private final CityService cityService;
+
+    public CharacterService(CharacterRepository characterRepository, UserService userService, CityService cityService) {
+        this.characterRepository = characterRepository;
+        this.userService = userService;
+        this.cityService = cityService;
+    }
 
     public void createCharacter(CharacterRequest characterRequest) {
         GameCharacter gameCharacter = new GameCharacter();

@@ -16,6 +16,8 @@ public class Enemy {
     private int inte=1;
     private int hp=10;
     private int latestDam;
+    private int def;
+    private int armorPiercing;
     private Long charId;
 
     @ManyToOne

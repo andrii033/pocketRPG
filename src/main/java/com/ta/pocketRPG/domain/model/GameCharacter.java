@@ -18,12 +18,14 @@ public class GameCharacter {
     private int agi;
     private int inte;
 
+    private int def;
     private int physicalHarm;
     private int armorPiercing;
     private int reduceBlockDam;
     private int maxHealth;
     private int critChance;
     private int attackSpeed;
+    private int tempAttackSpeed;
     private int avoidance;
     private int blockChance;
     private int magicDam;
@@ -39,7 +41,7 @@ public class GameCharacter {
     private int mainPoints;
     private int secondaryPoints;
     private Integer enemyId;
-    private long exp;
+    private int exp;
     private int lvl;
     private int latestDam;
     private int damageDone;
