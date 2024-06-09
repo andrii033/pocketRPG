@@ -62,16 +62,26 @@ public class EventGenerator {
             character.setLatestDam(damag); //to send to the client
 
             enemy.setHp(enemy.getHp() - damag); //attack
-            character.addExp((int)Math.ceil(damag/3));
-            System.out.println("exp "+(int)Math.ceil(damag/3));
+            int exp = (int)Math.ceil((double) damag/3);
+//            if (exp < 0)
+//                exp = 1;
+            character.addExp(exp);
+            System.out.println("add exp "+exp+" damag "+damag);
+            System.out.println("char exp "+character.getExp());
 
-            if(character.getExp() < character.getLvl()*50){
+            if(character.getExp() > character.getLvl()*50){
                 character.setExp(0);
                 character.setLvl(character.getLvl()+1);
+                if(character.getLvl() % 2 == 0 ){
+                    character.setUnallocatedMainPoints(character.getUnallocatedMainPoints()+3);
+                }else {
+                    character.setUnallocatedSecondaryPoints(character.getStr()+character.getAgi()+character.getInte());
+                }
+
                 log.info("character lvl up !!!!!!!!");
             }
 
-            log.info("enemyHp " + enemy.getHp() + " char exp " + character.getExp());
+            log.info("enemyHp " + enemy.getHp());
 
             if (enemy.getHp() <= 0) {
                 character.setEnemyId(null);
@@ -79,6 +89,6 @@ public class EventGenerator {
             }
             enemy.setCharId(character.getId());
         }
-        characterService.saveAll(characterFightList);
+        characterService.saveAll(characterFightList);//исправить !!!!!!!!!!!!!!!!!!
     }
 }

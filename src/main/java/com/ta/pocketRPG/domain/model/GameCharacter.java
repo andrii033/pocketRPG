@@ -43,8 +43,10 @@ public class GameCharacter {
     private Integer enemyId;
     private int exp;
     private int lvl;
+    private int unallocatedMainPoints;
+    private int unallocatedSecondaryPoints;
     private int latestDam;
-    private int damageDone;
+    //private int damageDone;
 
 
 

@@ -39,6 +39,7 @@ public class CharacterController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createCharacter(@RequestBody CharacterRequest characterRequest) {
+        System.out.println("createCharacter");
         try {
             characterService.createCharacter(characterRequest);
             return ResponseEntity.ok("Character created successfully.");
