@@ -11,7 +11,6 @@ import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
 import com.ta.pocketRPG.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,16 +25,19 @@ import java.util.Map;
 @RequestMapping("/character")
 public class CharacterController {
 
-    @Autowired
-    private CharacterService characterService;
-    @Autowired
-    private CharacterRepository characterRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CityRepository cityRepository;
-    @Autowired
-    private EnemyRepository enemyRepository;
+    private final CharacterService characterService;
+    private final CharacterRepository characterRepository;
+    private final UserService userService;
+    private final CityRepository cityRepository;
+    private final EnemyRepository enemyRepository;
+
+    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository) {
+        this.characterService = characterService;
+        this.characterRepository = characterRepository;
+        this.userService = userService;
+        this.cityRepository = cityRepository;
+        this.enemyRepository = enemyRepository;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createCharacter(@RequestBody CharacterRequest characterRequest) {
@@ -69,6 +71,12 @@ public class CharacterController {
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
         //System.out.println("selectedCharacterID " + gameCharacter);
         List<City> cities = cityRepository.findByListOfCitiesId(gameCharacter.getCity().getListOfCities().getId());
+        List<CityRequest> cityRequests = getCityRequests(cities);
+
+        return ResponseEntity.ok(cityRequests);
+    }
+
+    private static List<CityRequest> getCityRequests(List<City> cities) {
         List<CityRequest> cityRequests = new ArrayList<>();
         for (City city : cities) {
             CityRequest cityRequest = new CityRequest();
@@ -87,8 +95,7 @@ public class CharacterController {
 
             cityRequests.add(cityRequest);
         }
-
-        return ResponseEntity.ok(cityRequests);
+        return cityRequests;
     }
 
     private List<CharacterRequest> createCharacterRequestList() {
@@ -149,7 +156,6 @@ public class CharacterController {
 
     @PostMapping("/selectTarget")
     private ResponseEntity<?> selectTarget(@RequestBody Integer id) {
-        log.info("select target " + id);
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 

@@ -6,7 +6,6 @@ import com.ta.pocketRPG.domain.model.Enemy;
 import com.ta.pocketRPG.domain.model.ListOfCities;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.repository.ListOfCitiesRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -17,12 +16,17 @@ import java.util.Random;
 @Service
 public class CityService {
 
-    @Autowired
-    private CityRepository cityRepository;
-    @Autowired
-    private ListOfCitiesRepository listOfCitiesRepository;
-    @Autowired
-    private EnemyService enemyService;
+    private final CityRepository cityRepository;
+
+    private final ListOfCitiesRepository listOfCitiesRepository;
+
+    private final EnemyService enemyService;
+
+    public CityService(CityRepository cityRepository, ListOfCitiesRepository listOfCitiesRepository, EnemyService enemyService) {
+        this.cityRepository = cityRepository;
+        this.listOfCitiesRepository = listOfCitiesRepository;
+        this.enemyService = enemyService;
+    }
 
     @PostConstruct
     public void initializeCity() {

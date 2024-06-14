@@ -4,7 +4,6 @@ import com.ta.pocketRPG.domain.model.Enemy;
 import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
-import com.ta.pocketRPG.service.CityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,13 +17,11 @@ import java.util.Random;
 public class EventGenerator {
 
     private final CharacterService characterService;
-    private final CityService cityService;
     private final EnemyRepository enemyRepository;
     private final Random random = new Random();
 
-    public EventGenerator(CharacterService characterService, CityService cityService, EnemyRepository enemyRepository) {
+    public EventGenerator(CharacterService characterService, EnemyRepository enemyRepository) {
         this.characterService = characterService;
-        this.cityService = cityService;
         this.enemyRepository = enemyRepository;
     }
 
@@ -35,10 +32,9 @@ public class EventGenerator {
         for (var character : characterFightList) {
             Enemy enemy = enemyRepository.findEnemyById((long) character.getEnemyId()); //find enemy
 
-            int damag = 0;
-            int tempHp = enemy.getHp();
-            int minDam = 1 + (int) Math.ceil(character.getPhysicalHarm() / 2);
-            int maxDam = 3 + (int) Math.ceil(character.getPhysicalHarm() / 2);
+            int damag;
+            int minDam = 1 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
+            int maxDam = 3 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
 
             int atackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2);//calculate attack speed
             int tempSpeed = character.getTempAttackSpeed();
@@ -63,8 +59,7 @@ public class EventGenerator {
 
             enemy.setHp(enemy.getHp() - damag); //attack
             int exp = (int)Math.ceil((double) damag/3);
-//            if (exp < 0)
-//                exp = 1;
+
             character.addExp(exp);
             System.out.println("add exp "+exp+" damag "+damag);
             System.out.println("char exp "+character.getExp());
@@ -89,6 +84,6 @@ public class EventGenerator {
             }
             enemy.setCharId(character.getId());
         }
-        characterService.saveAll(characterFightList);//исправить !!!!!!!!!!!!!!!!!!
+        characterService.saveAll(characterFightList);
     }
 }
