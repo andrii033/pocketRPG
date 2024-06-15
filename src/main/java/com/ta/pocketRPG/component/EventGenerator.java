@@ -79,8 +79,10 @@ public class EventGenerator {
             log.info("enemyHp " + enemy.getHp());
 
             if (enemy.getHp() <= 0) {
+                log.info("you have defeated the enemy with id "+character.getEnemyId());
+                long enemyId=character.getEnemyId();
                 character.setEnemyId(null);
-                log.info("you have defeated the enemy");
+                enemyRepository.deleteById(enemyId);
             }
             enemy.setCharId(character.getId());
         }

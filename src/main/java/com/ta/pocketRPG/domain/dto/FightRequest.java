@@ -9,7 +9,7 @@ public class FightRequest {
     private String characterName;
     private int characterHp;
     private int characterLatestDam;
-    private int enemyId;
+    private long enemyId;
     private int enemyHp;
     private int enemyLatestDam;
 }

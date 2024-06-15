@@ -9,6 +9,7 @@ import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
+import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,13 +31,15 @@ public class CharacterController {
     private final UserService userService;
     private final CityRepository cityRepository;
     private final EnemyRepository enemyRepository;
+    private final EnemyService enemyService;
 
-    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository) {
+    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository, EnemyService enemyService) {
         this.characterService = characterService;
         this.characterRepository = characterRepository;
         this.userService = userService;
         this.cityRepository = cityRepository;
         this.enemyRepository = enemyRepository;
+        this.enemyService = enemyService;
     }
 
     @PostMapping("/create")
