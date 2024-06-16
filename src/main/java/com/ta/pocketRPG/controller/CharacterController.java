@@ -31,15 +31,13 @@ public class CharacterController {
     private final UserService userService;
     private final CityRepository cityRepository;
     private final EnemyRepository enemyRepository;
-    private final EnemyService enemyService;
 
-    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository, EnemyService enemyService) {
+    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository) {
         this.characterService = characterService;
         this.characterRepository = characterRepository;
         this.userService = userService;
         this.cityRepository = cityRepository;
         this.enemyRepository = enemyRepository;
-        this.enemyService = enemyService;
     }
 
     @PostMapping("/create")

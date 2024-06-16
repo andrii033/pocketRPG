@@ -38,15 +38,15 @@ public class GameCharacter {
     private int hp;
     private int mana;
 
-    private int mainPoints;
-    private int secondaryPoints;
     private Integer enemyId;
     private int exp;
     private int lvl;
     private int unallocatedMainPoints;
-    private int unallocatedSecondaryPoints;
+    private int unallocatedStrPoints;
+    private int unallocatedAgiPoints;
+    private int unallocatedIntePoints;
     private int latestDam;
-    //private int damageDone;
+
 
 
 
@@ -58,6 +58,12 @@ public class GameCharacter {
 
     public void addExp(int newExp){
         exp+=newExp;
+    }
+
+    public void addSecondaryPoints(){
+        unallocatedAgiPoints+=agi;
+        unallocatedIntePoints+=inte;
+        unallocatedStrPoints+=str;
     }
 
 }

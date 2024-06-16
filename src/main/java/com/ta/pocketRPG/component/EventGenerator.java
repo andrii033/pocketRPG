@@ -32,10 +32,6 @@ public class EventGenerator {
         for (var character : characterFightList) {
             Enemy enemy = enemyRepository.findEnemyById((long) character.getEnemyId()); //find enemy
 
-            int damag;
-            int minDam = 1 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
-            int maxDam = 3 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
-
             int atackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2);//calculate attack speed
             int tempSpeed = character.getTempAttackSpeed();
             tempSpeed = tempSpeed + atackSpeed;
@@ -45,38 +41,17 @@ public class EventGenerator {
                 character.setTempAttackSpeed(tempSpeed);
                 continue;
             }
-            damag = minDam + random.nextInt((maxDam - minDam) + 1); //damage calculation
-            int defTemp = enemy.getDef() - character.getArmorPiercing();
-            if (defTemp > 0) {
-                damag = damag - defTemp;
-            }
-            int luckChance = random.nextInt(1000) + 1; //0.1 point crit chance for 1 point agility
-            if (luckChance < character.getCritChance()) {
-                damag *= 2;
-            }
 
-            character.setLatestDam(damag); //to send to the client
+            int damage = calculateDamage(character, enemy); //damage
+            character.setLatestDam(damage); //to send to the client
+            enemy.setHp(enemy.getHp() - damage); //attack
 
-            enemy.setHp(enemy.getHp() - damag); //attack
-            int exp = (int)Math.ceil((double) damag/3);
-
+            int exp = (int)Math.ceil((double) damage/3);//exp
             character.addExp(exp);
-            System.out.println("add exp "+exp+" damag "+damag);
-            System.out.println("char exp "+character.getExp());
 
-            if(character.getExp() > character.getLvl()*50){
-                character.setExp(0);
-                character.setLvl(character.getLvl()+1);
-                if(character.getLvl() % 2 == 0 ){
-                    character.setUnallocatedMainPoints(character.getUnallocatedMainPoints()+3);
-                }else {
-                    character.setUnallocatedSecondaryPoints(character.getStr()+character.getAgi()+character.getInte());
-                }
+            System.out.println("add exp "+exp+" damage "+damage+" char exp "+character.getExp());
 
-                log.info("character lvl up !!!!!!!!");
-            }
-
-            log.info("enemyHp " + enemy.getHp());
+            lvlUp(character);
 
             if (enemy.getHp() <= 0) {
                 log.info("you have defeated the enemy with id "+character.getEnemyId());
@@ -87,5 +62,36 @@ public class EventGenerator {
             enemy.setCharId(character.getId());
         }
         characterService.saveAll(characterFightList);
+    }
+
+    private static void lvlUp(GameCharacter character) {
+        if(character.getExp() > character.getLvl()*50){
+            character.setExp(0);
+            character.setLvl(character.getLvl()+1);
+            if(character.getLvl() % 2 == 0 ){
+                character.setUnallocatedMainPoints(character.getUnallocatedMainPoints()+3);
+            }else {
+                character.addSecondaryPoints();
+            }
+
+            log.info("character lvl up !!!!!!!!");
+        }
+    }
+
+    private int calculateDamage(GameCharacter character, Enemy enemy) {
+        int damag;
+        int minDam = 1 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
+        int maxDam = 3 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
+
+        damag = minDam + random.nextInt((maxDam - minDam) + 1); //damage calculation
+        int defTemp = enemy.getDef() - character.getArmorPiercing();
+        if (defTemp > 0) {
+            damag = damag - defTemp;
+        }
+        int luckChance = random.nextInt(1000) + 1; //0.1 point crit chance for 1 point agility
+        if (luckChance < character.getCritChance()) {
+            damag *= 2;
+        }
+        return damag;
     }
 }

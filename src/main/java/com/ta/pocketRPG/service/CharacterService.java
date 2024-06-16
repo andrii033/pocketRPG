@@ -44,8 +44,8 @@ public class CharacterService {
         gameCharacter.setGold(1);
         gameCharacter.setRes(0);
         gameCharacter.setExp(0);
-        gameCharacter.setMainPoints(0);
-        gameCharacter.setSecondaryPoints(0);
+        //gameCharacter.setMainPoints(0);
+        //gameCharacter.setSecondaryPoints(0);
         gameCharacter.setUser(userService.getCurrentUser());
 
         User currentUser = userService.getCurrentUser();
