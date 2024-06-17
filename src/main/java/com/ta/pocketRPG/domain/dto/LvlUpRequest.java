@@ -1,13 +1,13 @@
 package com.ta.pocketRPG.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-public class CharacterRequest {
-    private String characterName;
-    private Long id;
+@Data
+public class LvlUpRequest {
+    private int unallocatedMainPoints;
+    private int unallocatedStrPoints;
+    private int unallocatedAgiPoints;
+    private int unallocatedIntePoints;
 
     private int str;
     private int agi;
@@ -17,25 +17,14 @@ public class CharacterRequest {
     private int armorPiercing;
     private int reduceBlockDam;
     private int maxHealth;
+
     private int critChance;
     private int attackSpeed;
     private int avoidance;
     private int blockChance;
+
     private int magicDam;
     private int magicCritChance;
     private int manaRegen;
     private int maxMana;
-
-    private int hp;
-    private int mana;
-    private int gold;
-    private int res;
-
-    private int xCoord;
-    private int yCoord;
-
-    private int unallocatedMainPoints;
-    private int unallocatedStrPoints;
-    private int unallocatedAgiPoints;
-    private int unallocatedIntePoints;
 }

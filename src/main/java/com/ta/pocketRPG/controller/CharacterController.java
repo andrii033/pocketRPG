@@ -1,15 +1,11 @@
 package com.ta.pocketRPG.controller;
 
-import com.ta.pocketRPG.domain.dto.CharacterMove;
-import com.ta.pocketRPG.domain.dto.CharacterRequest;
-import com.ta.pocketRPG.domain.dto.CityRequest;
-import com.ta.pocketRPG.domain.dto.FightRequest;
+import com.ta.pocketRPG.domain.dto.*;
 import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
-import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -196,5 +192,23 @@ public class CharacterController {
         return ResponseEntity.ok(fightRequest);
     }
 
+    @GetMapping("/lvlup")
+    private ResponseEntity<?> getPoints(){
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        LvlUpRequest lvlUpRequest = new LvlUpRequest();
+        lvlUpRequest.setUnallocatedMainPoints(gameCharacter.getUnallocatedMainPoints());
+        lvlUpRequest.setUnallocatedStrPoints(gameCharacter.getUnallocatedStrPoints());
+        lvlUpRequest.setUnallocatedAgiPoints(gameCharacter.getUnallocatedAgiPoints());
+        lvlUpRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
+        return ResponseEntity.ok(lvlUpRequest);
+    }
+
+    @PostMapping("/lvlup")
+    private ResponseEntity<?> setPoints(@RequestBody LvlUpRequest lvlUpRequest) {
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+
+    }
 
 }
