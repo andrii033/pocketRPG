@@ -15,8 +15,8 @@ public class UserService {
     private final UserRepository repository;
 
     /**
-     * Сохранение пользователя
-     * @return сохраненный пользователь
+     * User protection
+     * @return the stored user
      */
     public User save(User user) {
         return repository.save(user);
@@ -24,8 +24,8 @@ public class UserService {
 
 
     /**
-     * Создание пользователя
-     * @return созданный пользователь
+     * User creation
+     * @return the created user
      */
     public User create(User user) {
 //        if (repository.existsByUsername(user.getUsername())) {
@@ -41,8 +41,8 @@ public class UserService {
     }
 
     /**
-     * Получение пользователя по имени пользователя
-     * @return пользователь
+     * Getting the user by the user's name
+     * @return the user
      */
     public User getByUsername(String username) {
         return repository.findByUsername(username)
@@ -51,17 +51,17 @@ public class UserService {
     }
 
     /**
-     * Получение пользователя по имени пользователя
-     * Нужен для Spring Security
-     * @return пользователь
+     * Getting the user by the user's name
+     * Required for Spring Security
+     * @return the user
      */
     public UserDetailsService userDetailsService() {
         return this::getByUsername;
     }
 
     /**
-     * Получение текущего пользователя
-     * @return текущий пользователь
+     * Getting the current user
+     * @return the current user
      */
     public User getCurrentUser() {
         // Получение имени пользователя из контекста Spring Security
@@ -72,8 +72,8 @@ public class UserService {
 
 
     /**
-     * Выдача прав администратора текущему пользователю
-     * Нужен для демонстрации
+     * Issuance of administrator rights to the current user
+     * Needed for demonstration
      */
     @Deprecated
     public void getAdmin() {

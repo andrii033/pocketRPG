@@ -193,7 +193,7 @@ public class CharacterController {
     }
 
     @GetMapping("/lvlup")
-    private ResponseEntity<?> getPoints(){
+    private ResponseEntity<?> getPoints() {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
         LvlUpRequest lvlUpRequest = new LvlUpRequest();
@@ -209,6 +209,20 @@ public class CharacterController {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
+        int sumClientMainPoints = lvlUpRequest.getStr() + lvlUpRequest.getAgi() + lvlUpRequest.getInte()
+                + lvlUpRequest.getUnallocatedMainPoints();//points received from the client
+        int sumServerMainPoints = gameCharacter.getUnallocatedMainPoints() + gameCharacter.getStr() +
+                gameCharacter.getAgi() + gameCharacter.getInte();
+        if (sumServerMainPoints == sumClientMainPoints) {
+            gameCharacter.setUnallocatedMainPoints(lvlUpRequest.getUnallocatedMainPoints());
+            gameCharacter.setStr(lvlUpRequest.getStr());
+            gameCharacter.setAgi(lvlUpRequest.getAgi());
+            gameCharacter.setInte(lvlUpRequest.getInte());
+        }
+
+
+
+        return ResponseEntity.ok("ok");
     }
 
 }
