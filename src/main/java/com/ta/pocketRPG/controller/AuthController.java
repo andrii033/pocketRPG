@@ -1,8 +1,5 @@
 package com.ta.pocketRPG.controller;
 
-
-import javax.validation.Valid;
-
 import com.ta.pocketRPG.domain.dto.JwtAuthenticationResponse;
 import com.ta.pocketRPG.domain.dto.SignInRequest;
 import com.ta.pocketRPG.domain.dto.SignUpRequest;
@@ -13,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
