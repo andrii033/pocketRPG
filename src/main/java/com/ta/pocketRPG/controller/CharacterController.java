@@ -59,10 +59,10 @@ public class CharacterController {
     }
 
     @PostMapping("/choose")
-    public ResponseEntity<?> chooseCharacter(@RequestBody CharacterRequest characterRequest) {
-        //System.out.println(characterRequest.getId());
+    public ResponseEntity<?> chooseCharacter(@RequestBody String id) {
+        System.out.println(id);
         User user = userService.getCurrentUser();
-        user.setSelectedCharacterId(characterRequest.getId());
+        user.setSelectedCharacterId(Long.valueOf(id));
         userService.save(user);
 
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
@@ -109,8 +109,8 @@ public class CharacterController {
                 characterRequest.setInte(character.getInte());
                 characterRequest.setGold(character.getGold());
                 characterRequest.setAgi(character.getAgi());
-                characterRequest.setXCoord(character.getCity().getXCoord());
-                characterRequest.setYCoord(character.getCity().getYCoord());
+                //characterRequest.setXCoord(character.getCity().getXCoord());
+                //characterRequest.setYCoord(character.getCity().getYCoord());
                 listCharacterRequest.add(characterRequest);
             }
         }
