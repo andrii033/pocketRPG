@@ -117,39 +117,6 @@ public class CharacterController {
         return listCharacterRequest;
     }
 
-    @PostMapping("/move")
-    private ResponseEntity<?> moveCharacter(@RequestBody CharacterMove characterMove) {
-        User user = userService.getCurrentUser();
-        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-
-        //log.info("character move " + characterMove.getX() + " " + characterMove.getY());
-
-        Long listOfCitiesId = gameCharacter.getCity().getListOfCities().getId();
-        List<City> listOfCity = cityRepository.findByListOfCitiesId(listOfCitiesId);
-
-        City targetCity = null;
-        int currentX = gameCharacter.getCity().getXCoord();
-        int currentY = gameCharacter.getCity().getYCoord();
-        int targetX = characterMove.getX();
-        int targetY = characterMove.getY();
-        if (Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1)
-            for (City city : listOfCity) {
-                if (city.getXCoord() == characterMove.getX() && city.getYCoord() == characterMove.getY() &&
-                        TerrainTypes.PASSABLE_TERRAIN_TYPES.contains(city.getTerrainType())) {
-                    targetCity = city;
-                    gameCharacter.setCity(targetCity);
-                    characterRepository.save(gameCharacter);
-                    break;
-
-                }
-            }
-        if (targetCity == null) {
-            characterMove.setY(gameCharacter.getCity().getYCoord());
-            characterMove.setX(gameCharacter.getCity().getXCoord());
-        }
-
-        return ResponseEntity.ok(characterMove);
-    }
 
     @PostMapping("/selectTarget")
     private ResponseEntity<?> selectTarget(@RequestBody Integer id) {
