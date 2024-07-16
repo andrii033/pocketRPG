@@ -108,6 +108,7 @@ public class CharacterController {
     }
 
 
+
     @GetMapping("/fight")
     private ResponseEntity<?> fightData() {
         User user = userService.getCurrentUser();
@@ -158,7 +159,11 @@ public class CharacterController {
             gameCharacter.setInte(lvlUpRequest.getInte());
         }
 
+        return ResponseEntity.ok("ok");
+    }
 
+    @PostMapping("/move")
+    private  ResponseEntity<?> moveBattleCity(@RequestBody Long id){
 
         return ResponseEntity.ok("ok");
     }
