@@ -164,7 +164,10 @@ public class CharacterController {
 
     @PostMapping("/move")
     private  ResponseEntity<?> moveBattleCity(@RequestBody Long id){
-
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        gameCharacter.setCity(cityRepository.getById(id));
+        characterRepository.save(gameCharacter);
         return ResponseEntity.ok("ok");
     }
 
