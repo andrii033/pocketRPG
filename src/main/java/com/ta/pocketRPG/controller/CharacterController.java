@@ -65,12 +65,7 @@ public class CharacterController {
         user.setSelectedCharacterId(Long.valueOf(id));
         userService.save(user);
 
-        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        //System.out.println("selectedCharacterID " + gameCharacter);
-        List<City> cities = cityRepository.findByListOfCitiesId(gameCharacter.getCity().getListOfCities().getId());
-        List<CityRequest> cityRequests = getCityRequests(cities);
-
-        return ResponseEntity.ok(cityRequests);
+        return ResponseEntity.ok(user.getSelectedCharacterId());
     }
 
     private static List<CityRequest> getCityRequests(List<City> cities) {
@@ -78,13 +73,8 @@ public class CharacterController {
         for (City city : cities) {
             CityRequest cityRequest = new CityRequest();
 
-            cityRequest.setXCoord(city.getXCoord());
-            cityRequest.setYCoord(city.getYCoord());
-            cityRequest.setTerrainType(city.getTerrainType());
-
             Map<String, String> enemies = new HashMap<>();
 
-            //log.info("enemies "+city.getEnemy().toString());
             for (var enemy : city.getEnemy()) {
                 enemies.put(enemy.getId().toString(), enemy.getName());
             }
@@ -117,25 +107,6 @@ public class CharacterController {
         return listCharacterRequest;
     }
 
-
-    @PostMapping("/selectTarget")
-    private ResponseEntity<?> selectTarget(@RequestBody Integer id) {
-        User user = userService.getCurrentUser();
-        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-
-        Enemy enemy = enemyRepository.findEnemyById(Long.valueOf(id));
-        int currentX = gameCharacter.getCity().getXCoord();
-        int currentY = gameCharacter.getCity().getYCoord();
-        int targetX = enemy.getCity().getXCoord();
-        int targetY = enemy.getCity().getYCoord();
-        if (Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1) {
-            gameCharacter.setEnemyId(id);
-            characterRepository.save(gameCharacter);
-            return ResponseEntity.ok("ok");
-        } else {
-            return ResponseEntity.ok("Enemy is not within range");
-        }
-    }
 
     @GetMapping("/fight")
     private ResponseEntity<?> fightData() {
