@@ -34,12 +34,12 @@ public class CityService {
         battleField.setName("Battlefield");
         cities.add(battleField);
 
-        List<Enemy> enemies = new ArrayList<>();
-        for (int i=0; i<5; i++) {
-            Enemy enemy = enemyService.createEnemy(battleField);
-            enemies.add(enemy);
-        }
-        battleField.setEnemy(enemies);
+//        List<Enemy> enemies = new ArrayList<>();
+//        for (int i=0; i<5; i++) {
+//            Enemy enemy = enemyService.createEnemy(battleField);
+//            enemies.add(enemy);
+//        }
+//        battleField.setEnemy(enemies);
 
         // Save the ListOfCities first
         cityRepository.saveAll(cities);

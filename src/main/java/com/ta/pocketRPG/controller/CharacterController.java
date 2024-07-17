@@ -6,6 +6,7 @@ import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
+import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,13 +28,15 @@ public class CharacterController {
     private final UserService userService;
     private final CityRepository cityRepository;
     private final EnemyRepository enemyRepository;
+    private final EnemyService enemyService;
 
-    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository) {
+    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository, EnemyService enemyService) {
         this.characterService = characterService;
         this.characterRepository = characterRepository;
         this.userService = userService;
         this.cityRepository = cityRepository;
         this.enemyRepository = enemyRepository;
+        this.enemyService = enemyService;
     }
 
     @PostMapping("/create")
@@ -68,22 +71,22 @@ public class CharacterController {
         return ResponseEntity.ok(user.getSelectedCharacterId());
     }
 
-    private static List<CityRequest> getCityRequests(List<City> cities) {
-        List<CityRequest> cityRequests = new ArrayList<>();
-        for (City city : cities) {
-            CityRequest cityRequest = new CityRequest();
-
-            Map<String, String> enemies = new HashMap<>();
-
-            for (var enemy : city.getEnemy()) {
-                enemies.put(enemy.getId().toString(), enemy.getName());
-            }
-            cityRequest.setEnemies(enemies);
-
-            cityRequests.add(cityRequest);
-        }
-        return cityRequests;
-    }
+//    private static List<CityRequest> getCityRequests(List<City> cities) {
+//        List<CityRequest> cityRequests = new ArrayList<>();
+//        for (City city : cities) {
+//            CityRequest cityRequest = new CityRequest();
+//
+//            Map<String, String> enemies = new HashMap<>();
+//
+//            for (var enemy : city.getEnemy()) {
+//                enemies.put(enemy.getId().toString(), enemy.getName());
+//            }
+//            cityRequest.setEnemies(enemies);
+//
+//            cityRequests.add(cityRequest);
+//        }
+//        return cityRequests;
+//    }
 
     private List<CharacterRequest> createCharacterRequestList() {
         List<CharacterRequest> listCharacterRequest = new ArrayList<>();
@@ -99,8 +102,6 @@ public class CharacterController {
                 characterRequest.setInte(character.getInte());
                 characterRequest.setGold(character.getGold());
                 characterRequest.setAgi(character.getAgi());
-                //characterRequest.setXCoord(character.getCity().getXCoord());
-                //characterRequest.setYCoord(character.getCity().getYCoord());
                 listCharacterRequest.add(characterRequest);
             }
         }
@@ -163,12 +164,26 @@ public class CharacterController {
     }
 
     @PostMapping("/move")
-    private  ResponseEntity<?> moveBattleCity(@RequestBody Long id){
+    private  ResponseEntity<?> moveBattleCity(@RequestBody Long id) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
         gameCharacter.setCity(cityRepository.getById(id));
         characterRepository.save(gameCharacter);
-        return ResponseEntity.ok("ok");
+
+        List<Enemy> enemies = null;
+        if (gameCharacter.getCity().getId() == 2) {
+            City battleCity = new City();
+
+            enemies = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                Enemy enemy = new Enemy(); //will be loaded from the database in the future
+                enemy = enemyService.createEnemy();
+                enemies.add(enemy);
+            }
+            battleCity.setEnemy(enemies);
+        }
+
+        return ResponseEntity.ok(enemies);
     }
 
 }
