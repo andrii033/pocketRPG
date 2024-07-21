@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 public class EnemyService {
     @Autowired
     EnemyRepository enemyRepository;
-    public Enemy createEnemy(){
+    public Enemy createEnemy(City city){
         Enemy enemy = new Enemy();
         enemy.setAgi(1);
         enemy.setStr(1);
         enemy.setName("Enemy");
         enemy.setInte(1);
-        //enemy.setCity(city);
+        enemy.setCity(city);
         enemy.setHp(20);
         return enemy;
     }
