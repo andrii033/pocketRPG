@@ -1,5 +1,6 @@
 package com.ta.pocketRPG.component;
 
+import com.ta.pocketRPG.domain.model.City;
 import com.ta.pocketRPG.domain.model.Enemy;
 import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.repository.EnemyRepository;
@@ -9,7 +10,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Slf4j
@@ -20,6 +23,8 @@ public class EventGenerator {
     private final EnemyRepository enemyRepository;
     private final Random random = new Random();
 
+    private final Map<Long, Boolean> activeRooms = new HashMap<>();
+
     public EventGenerator(CharacterService characterService, EnemyRepository enemyRepository) {
         this.characterService = characterService;
         this.enemyRepository = enemyRepository;
@@ -28,34 +33,56 @@ public class EventGenerator {
     @Scheduled(fixedRate = 1000)
     @Transactional
     public void generateEvent() {
-        List<GameCharacter> characterFightList = characterService.charactersWithEnemies();
-        for (var character : characterFightList) {
-            Enemy enemy = enemyRepository.findEnemyById((long) character.getEnemyId()); //find enemy
+        for (Long cityId : activeRooms.keySet()) {
+            if (activeRooms.get(cityId)) {
+                processRoomEvents(cityId);
+            }
+        }
+    }
 
-            int atackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2);//calculate attack speed
+    @Transactional
+    public void startFightCycle(City city) {
+        activeRooms.put(city.getId(), true);
+    }
+
+    @Transactional
+    public void stopFightCycle(City city) {
+        //activeRooms.put(city.getId(), false);
+        activeRooms.remove(city.getId());
+    }
+
+    private void processRoomEvents(Long cityId) {
+        System.out.println("processRoomEvent");
+        List<GameCharacter> characterFightList = characterService.getCharactersByCity(cityId);
+        for (var character : characterFightList) {
+            Enemy enemy = enemyRepository.findById(Long.valueOf(character.getEnemyId())).orElse(null); // Find enemy
+
+            if (enemy == null) continue;
+
+            int attackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2); // Calculate attack speed
             int tempSpeed = character.getTempAttackSpeed();
-            tempSpeed = tempSpeed + atackSpeed;
+            tempSpeed = tempSpeed + attackSpeed;
             if (tempSpeed - 60 > 0) {
-                character.setTempAttackSpeed(tempSpeed-60);
-            }else{
+                character.setTempAttackSpeed(tempSpeed - 60);
+            } else {
                 character.setTempAttackSpeed(tempSpeed);
                 continue;
             }
 
-            int damage = calculateDamage(character, enemy); //damage
-            character.setLatestDam(damage); //to send to the client
-            enemy.setHp(enemy.getHp() - damage); //attack
+            int damage = calculateDamage(character, enemy); // Calculate damage
+            character.setLatestDam(damage); // To send to the client
+            enemy.setHp(enemy.getHp() - damage); // Attack
 
-            int exp = (int)Math.ceil((double) damage/3);//exp
+            int exp = (int) Math.ceil((double) damage / 3); // Calculate experience
             character.addExp(exp);
 
-            System.out.println("add exp "+exp+" damage "+damage+" char exp "+character.getExp());
+            log.info("Added exp " + exp + " damage " + damage + " char exp " + character.getExp());
 
             lvlUp(character);
 
             if (enemy.getHp() <= 0) {
-                log.info("you have defeated the enemy with id "+character.getEnemyId());
-                long enemyId=character.getEnemyId();
+                log.info("You have defeated the enemy with id " + character.getEnemyId());
+                long enemyId = character.getEnemyId();
                 character.setEnemyId(null);
                 enemyRepository.deleteById(enemyId);
             }
@@ -65,33 +92,33 @@ public class EventGenerator {
     }
 
     private static void lvlUp(GameCharacter character) {
-        if(character.getExp() > character.getLvl()*50){
+        if (character.getExp() > character.getLvl() * 50) {
             character.setExp(0);
-            character.setLvl(character.getLvl()+1);
-            if(character.getLvl() % 2 == 0 ){
-                character.setUnallocatedMainPoints(character.getUnallocatedMainPoints()+3);
-            }else {
+            character.setLvl(character.getLvl() + 1);
+            if (character.getLvl() % 2 == 0) {
+                character.setUnallocatedMainPoints(character.getUnallocatedMainPoints() + 3);
+            } else {
                 character.addSecondaryPoints();
             }
 
-            log.info("character lvl up !!!!!!!!");
+            log.info("Character leveled up!");
         }
     }
 
     private int calculateDamage(GameCharacter character, Enemy enemy) {
-        int damag;
+        int damage;
         int minDam = 1 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
         int maxDam = 3 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
 
-        damag = minDam + random.nextInt((maxDam - minDam) + 1); //damage calculation
+        damage = minDam + random.nextInt((maxDam - minDam) + 1); // Damage calculation
         int defTemp = enemy.getDef() - character.getArmorPiercing();
         if (defTemp > 0) {
-            damag = damag - defTemp;
+            damage = damage - defTemp;
         }
-        int luckChance = random.nextInt(1000) + 1; //0.1 point crit chance for 1 point agility
+        int luckChance = random.nextInt(1000) + 1; // 0.1 point crit chance for 1 point agility
         if (luckChance < character.getCritChance()) {
-            damag *= 2;
+            damage *= 2;
         }
-        return damag;
+        return damage;
     }
 }

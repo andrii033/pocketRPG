@@ -45,6 +45,7 @@ public class CharacterService {
         gameCharacter.setRes(0);
         gameCharacter.setExp(0);
         gameCharacter.setLvl(1);
+        gameCharacter.setHp(10);
         gameCharacter.setUser(userService.getCurrentUser());
 
         User currentUser = userService.getCurrentUser();
@@ -64,4 +65,7 @@ public class CharacterService {
         characterRepository.saveAll(list);
     }
 
+    public List<GameCharacter> getCharactersByCity(Long cityId) {
+        return characterRepository.findByCityId(cityId);
+    }
 }

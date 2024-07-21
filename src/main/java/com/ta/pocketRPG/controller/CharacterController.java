@@ -1,5 +1,6 @@
 package com.ta.pocketRPG.controller;
 
+import com.ta.pocketRPG.component.EventGenerator;
 import com.ta.pocketRPG.domain.dto.*;
 import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
@@ -14,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -29,14 +28,16 @@ public class CharacterController {
     private final CityRepository cityRepository;
     private final EnemyRepository enemyRepository;
     private final EnemyService enemyService;
+    private final EventGenerator eventGenerator;
 
-    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository, EnemyService enemyService) {
+    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository, EnemyService enemyService, EventGenerator eventGenerator) {
         this.characterService = characterService;
         this.characterRepository = characterRepository;
         this.userService = userService;
         this.cityRepository = cityRepository;
         this.enemyRepository = enemyRepository;
         this.enemyService = enemyService;
+        this.eventGenerator = eventGenerator;
     }
 
     @PostMapping("/create")
@@ -147,7 +148,7 @@ public class CharacterController {
     }
 
     @PostMapping("/move")
-    private  ResponseEntity<?> moveBattleCity(@RequestBody Long id) {
+    private ResponseEntity<?> moveBattleCity(@RequestBody Long id) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
@@ -158,20 +159,18 @@ public class CharacterController {
         gameCharacter.setCity(cityRepository.getById(id));
         characterRepository.save(gameCharacter);
 
-        List<Enemy> enemies = null;
-//        if (true) {
-            enemies = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
-                Enemy enemy = new Enemy(); //will be loaded from the database in the future
-                enemy = enemyService.createEnemy(battleCity1);
-                enemies.add(enemy);
-            }
+        List<Enemy> enemies = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Enemy enemy = new Enemy(); // Will be loaded from the database in the future
+            enemy = enemyService.createEnemy(battleCity1);
+            enemies.add(enemy);
+        }
 
-            battleCity1.setEnemy(enemies);
-            cityRepository.save(battleCity1);
-//        }
+        battleCity1.setEnemy(enemies);
+        cityRepository.save(battleCity1);
+
         List<EnemyRequest> enemiesRequest = new ArrayList<>();
-        for(var x:enemies){
+        for (var x : enemies) {
             EnemyRequest enemy = new EnemyRequest();
             enemy.setArmorPiercing(x.getArmorPiercing());
             enemy.setDef(x.getDef());
@@ -186,7 +185,10 @@ public class CharacterController {
             enemiesRequest.add(enemy);
         }
 
+        eventGenerator.startFightCycle(battleCity1); // Start the fight cycle for the new city
+
         return ResponseEntity.ok(enemiesRequest);
     }
+
 
 }

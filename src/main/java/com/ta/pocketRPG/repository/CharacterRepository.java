@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface CharacterRepository extends JpaRepository<GameCharacter, Long> {
-//    GameCharacter save(GameCharacter gameCharacter);
     List<GameCharacter> findByEnemyIdNot(int enemyId);
     List<GameCharacter> findGameCharacterByUser(User user);
+    List<GameCharacter> findByCityId(Long cityId);
 }
