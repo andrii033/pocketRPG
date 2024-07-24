@@ -95,7 +95,7 @@ public class CharacterController {
 
 
     @GetMapping("/fight")
-    private ResponseEntity<?> fightData() {
+    private ResponseEntity<?> fightData(@RequestBody String id) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
         FightRequest fightRequest = new FightRequest();

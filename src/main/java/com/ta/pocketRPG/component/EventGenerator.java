@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
@@ -22,6 +23,7 @@ public class EventGenerator {
     private final CharacterService characterService;
     private final EnemyRepository enemyRepository;
     private final Random random = new Random();
+    private AtomicBoolean stopFlag = new AtomicBoolean(false);
 
     private final Map<Long, Boolean> activeRooms = new HashMap<>();
 
@@ -33,7 +35,9 @@ public class EventGenerator {
     @Scheduled(fixedRate = 1000)
     @Transactional
     public void generateEvent() {
+
         for (Long cityId : activeRooms.keySet()) {
+            System.out.println("City: " + cityId);
             if (activeRooms.get(cityId)) {
                 processRoomEvents(cityId);
             }
@@ -52,7 +56,6 @@ public class EventGenerator {
     }
 
     private void processRoomEvents(Long cityId) {
-        System.out.println("processRoomEvent");
         List<GameCharacter> characterFightList = characterService.getCharactersByCity(cityId);
         for (var character : characterFightList) {
             Enemy enemy = enemyRepository.findById(Long.valueOf(character.getEnemyId())).orElse(null); // Find enemy
