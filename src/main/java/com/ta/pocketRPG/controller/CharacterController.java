@@ -100,6 +100,7 @@ public class CharacterController {
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
         if (gameCharacter.isWait()) {
+            return ResponseEntity.ok("You are waiting.");
 
         }
 //        FightRequest fightRequest = new FightRequest();

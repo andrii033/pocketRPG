@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -54,6 +55,8 @@ public class GameCharacter {
 
     private boolean wait;
 
+    @ElementCollection
+    private List<Integer> party;
 
     @ManyToOne
     private User user;
