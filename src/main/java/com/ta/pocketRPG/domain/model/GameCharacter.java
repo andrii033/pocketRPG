@@ -52,6 +52,8 @@ public class GameCharacter {
     private int latestDam;
     private int tempAttackSpeed;
 
+    private boolean wait;
+
 
     @ManyToOne
     private User user;

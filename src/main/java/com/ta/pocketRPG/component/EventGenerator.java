@@ -24,6 +24,7 @@ public class EventGenerator {
     private final EnemyRepository enemyRepository;
     private final Random random = new Random();
     private AtomicBoolean stopFlag = new AtomicBoolean(false);
+    private int counter = 0;
 
     private final Map<Long, Boolean> activeRooms = new HashMap<>();
 
@@ -35,12 +36,17 @@ public class EventGenerator {
     @Scheduled(fixedRate = 1000)
     @Transactional
     public void generateEvent() {
-
-        for (Long cityId : activeRooms.keySet()) {
-            System.out.println("City: " + cityId);
-            if (activeRooms.get(cityId)) {
-                processRoomEvents(cityId);
+        if (counter == 10 || stopFlag.get()) {
+            for (Long cityId : activeRooms.keySet()) {
+                System.out.println("City: " + cityId);
+                if (activeRooms.get(cityId)) {
+                    processRoomEvents(cityId);
+                }
             }
+            counter = 0;
+            stopFlag.set(false);
+        } else {
+            counter++;
         }
     }
 
