@@ -55,8 +55,9 @@ public class GameCharacter {
 
     private boolean wait;
 
-    @ElementCollection
-    private List<Integer> party;
+    @ManyToOne
+    @JoinColumn(name = "party_id")
+    private Party party;
 
     @ManyToOne
     private User user;
