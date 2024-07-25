@@ -94,29 +94,17 @@ public class CharacterController {
 
 
 
-    @GetMapping("/fight")
+    @PostMapping("/fight")
     private ResponseEntity<?> fightData(@RequestBody String id) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+
+        System.out.println("fightData");
 
         if (gameCharacter.isWait()) {
             return ResponseEntity.ok("You are waiting.");
 
         }
-//        FightRequest fightRequest = new FightRequest();
-//        fightRequest.setCharacterName(gameCharacter.getCharacterName());
-//        fightRequest.setCharacterHp(gameCharacter.getHp());
-//        fightRequest.setCharacterLatestDam(gameCharacter.getLatestDam());
-//
-//        Integer enemyId = gameCharacter.getEnemyId();
-//        if (enemyId != null) {
-//            fightRequest.setEnemyId(enemyId);
-//            Enemy enemy = enemyRepository.findEnemyById((long) enemyId);
-//            fightRequest.setEnemyHp(enemy.getHp());
-//            fightRequest.setEnemyLatestDam(enemy.getLatestDam());
-//        } else {
-//            fightRequest.setEnemyId(0);
-//        }
 
         return ResponseEntity.ok("wait");
     }
