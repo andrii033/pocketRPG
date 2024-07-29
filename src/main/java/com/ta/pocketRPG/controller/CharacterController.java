@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -93,6 +94,11 @@ public class CharacterController {
     }
 
 
+//    @GetMapping("/fight")
+//    private ResponseEntity<?> getFightData(){
+//        User user = userService.getCurrentUser();
+//        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+//    }
 
     @PostMapping("/fight")
     private ResponseEntity<?> fightData(@RequestBody String id) {
@@ -102,11 +108,11 @@ public class CharacterController {
         System.out.println("fightData");
 
         if (gameCharacter.isWait()) {
-            return ResponseEntity.ok("You are waiting.");
+            return ResponseEntity.ok("You are waiting. ");
 
         }
 
-        return ResponseEntity.ok("wait");
+        return ResponseEntity.ok("attack");
     }
 
     @GetMapping("/lvlup")
@@ -183,5 +189,15 @@ public class CharacterController {
         return ResponseEntity.ok(enemiesRequest);
     }
 
+    @PostMapping("/party")
+    public ResponseEntity<?> party(){
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        Optional<City> city = cityRepository.findById(gameCharacter.getCity().getId());
+        Party party = new Party();
+        gameCharacter.setParty(party);
+
+        return ResponseEntity.ok("Party created");
+    }
 
 }
