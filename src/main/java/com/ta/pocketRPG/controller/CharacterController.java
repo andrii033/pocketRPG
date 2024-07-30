@@ -5,7 +5,7 @@ import com.ta.pocketRPG.domain.dto.*;
 import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
-import com.ta.pocketRPG.repository.EnemyRepository;
+import com.ta.pocketRPG.repository.PartyRepository;
 import com.ta.pocketRPG.service.CharacterService;
 import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -27,16 +26,16 @@ public class CharacterController {
     private final CharacterRepository characterRepository;
     private final UserService userService;
     private final CityRepository cityRepository;
-    private final EnemyRepository enemyRepository;
     private final EnemyService enemyService;
     private final EventGenerator eventGenerator;
 
-    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository, EnemyService enemyService, EventGenerator eventGenerator) {
+    public CharacterController(CharacterService characterService, CharacterRepository characterRepository,
+                               UserService userService, CityRepository cityRepository, EnemyService enemyService,
+                               EventGenerator eventGenerator) {
         this.characterService = characterService;
         this.characterRepository = characterRepository;
         this.userService = userService;
         this.cityRepository = cityRepository;
-        this.enemyRepository = enemyRepository;
         this.enemyService = enemyService;
         this.eventGenerator = eventGenerator;
     }
@@ -151,6 +150,8 @@ public class CharacterController {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
+        log.info("moveBattleCity"+user.toString());
+
         City battleCity1 = new City();
         battleCity1.setName("Battle City ");
         cityRepository.save(battleCity1);
@@ -160,8 +161,7 @@ public class CharacterController {
 
         List<Enemy> enemies = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            Enemy enemy = new Enemy(); // Will be loaded from the database in the future
-            enemy = enemyService.createEnemy(battleCity1);
+            Enemy enemy = enemyService.createEnemy(battleCity1);
             enemies.add(enemy);
         }
 
@@ -189,15 +189,6 @@ public class CharacterController {
         return ResponseEntity.ok(enemiesRequest);
     }
 
-    @PostMapping("/party")
-    public ResponseEntity<?> party(){
-        User user = userService.getCurrentUser();
-        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        Optional<City> city = cityRepository.findById(gameCharacter.getCity().getId());
-        Party party = new Party();
-        gameCharacter.setParty(party);
 
-        return ResponseEntity.ok("Party created");
-    }
 
 }

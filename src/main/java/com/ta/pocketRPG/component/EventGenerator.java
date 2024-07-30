@@ -38,7 +38,7 @@ public class EventGenerator {
     public void generateEvent() {
         if (counter == 10 || stopFlag.get()) {
             for (Long cityId : activeRooms.keySet()) {
-                System.out.println("City: " + cityId);
+                log.info("City: " + cityId);
                 if (activeRooms.get(cityId)) {
                     processRoomEvents(cityId);
                 }
