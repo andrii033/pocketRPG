@@ -6,6 +6,8 @@ import com.ta.pocketRPG.domain.dto.SignUpRequest;
 import com.ta.pocketRPG.domain.model.Role;
 import com.ta.pocketRPG.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,8 +29,7 @@ public class AuthenticationService {
      * @param request user data
      * @return token
      */
-    public JwtAuthenticationResponse signUp(SignUpRequest request) {
-
+    public ResponseEntity<?> signUp(SignUpRequest request) {
         var user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
@@ -39,9 +40,11 @@ public class AuthenticationService {
         if (!repository.existsByUsername(user.getUsername()) && !repository.existsByEmail(user.getEmail())) {
             userService.create(user);
             var jwt = jwtService.generateToken(user);
-            return new JwtAuthenticationResponse(jwt);
+            //return new JwtAuthenticationResponse(jwt);
+            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
         } else {
-            return new JwtAuthenticationResponse();
+            //return new JwtAuthenticationResponse();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
     }
@@ -55,8 +58,7 @@ public class AuthenticationService {
     public JwtAuthenticationResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
-                request.getPassword()
-        ));
+                request.getPassword()));
 
         var user = userService
                 .userDetailsService()

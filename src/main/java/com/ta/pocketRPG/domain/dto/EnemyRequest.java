@@ -1,14 +1,11 @@
-package com.ta.pocketRPG.domain.model;
+package com.ta.pocketRPG.domain.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-
-@Data
-@Entity
-public class Enemy {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Getter
+@Setter
+public class EnemyRequest {
     private Long id;
     private String name;
     private int str=1;
@@ -19,7 +16,4 @@ public class Enemy {
     private int def;
     private int armorPiercing;
     private Long charId;
-
-    @ManyToOne
-    private City city;
 }

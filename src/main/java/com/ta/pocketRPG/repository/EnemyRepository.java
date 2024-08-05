@@ -11,4 +11,6 @@ public interface EnemyRepository extends JpaRepository<Enemy,Long> {
     Enemy save(Enemy enemy);
     Enemy findEnemyById(Long id);
     Optional<Enemy> findById(Long id);
+
+    void deleteById(int enemyId);
 }

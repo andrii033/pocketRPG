@@ -14,28 +14,14 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int xCoord;
-    private int yCoord;
-    private String terrainType;
+    private String name;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
     private List<GameCharacter> characters = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "list_of_cities_id")
-    private ListOfCities listOfCities;
-
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
     private List<Enemy> enemy = new ArrayList<>();
 
-    public String toString() {
-        return "City{" +
-                "id=" + id +
-                ", xCoord=" + xCoord +
-                ", yCoord=" + yCoord +
-                ", terrainType='" + terrainType + '\'' +
-                '}';
-    }
 }
 
 

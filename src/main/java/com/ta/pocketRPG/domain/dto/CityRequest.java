@@ -8,8 +8,5 @@ import java.util.Map;
 @Getter
 @Setter
 public class CityRequest {
-    private int xCoord;
-    private int yCoord;
-    private String terrainType;
     private Map<String,String> enemies;
 }

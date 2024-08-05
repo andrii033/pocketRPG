@@ -1,43 +1,49 @@
 package com.ta.pocketRPG.controller;
 
-import com.ta.pocketRPG.domain.dto.CharacterMove;
-import com.ta.pocketRPG.domain.dto.CharacterRequest;
-import com.ta.pocketRPG.domain.dto.CityRequest;
+import com.ta.pocketRPG.component.EventGenerator;
+import com.ta.pocketRPG.domain.dto.*;
 import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
+import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
 @RequestMapping("/character")
 public class CharacterController {
 
-    @Autowired
-    private CharacterService characterService;
-    @Autowired
-    private CharacterRepository characterRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CityRepository cityRepository;
-    @Autowired
-    private EnemyRepository enemyRepository;
+    private final CharacterService characterService;
+    private final CharacterRepository characterRepository;
+    private final UserService userService;
+    private final CityRepository cityRepository;
+    private final EnemyRepository enemyRepository;
+    private final EnemyService enemyService;
+    private final EventGenerator eventGenerator;
+
+    public CharacterController(CharacterService characterService, CharacterRepository characterRepository, UserService userService, CityRepository cityRepository, EnemyRepository enemyRepository, EnemyService enemyService, EventGenerator eventGenerator) {
+        this.characterService = characterService;
+        this.characterRepository = characterRepository;
+        this.userService = userService;
+        this.cityRepository = cityRepository;
+        this.enemyRepository = enemyRepository;
+        this.enemyService = enemyService;
+        this.eventGenerator = eventGenerator;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createCharacter(@RequestBody CharacterRequest characterRequest) {
+        System.out.println("createCharacter");
         try {
             characterService.createCharacter(characterRequest);
             return ResponseEntity.ok("Character created successfully.");
@@ -58,35 +64,13 @@ public class CharacterController {
     }
 
     @PostMapping("/choose")
-    public ResponseEntity<?> chooseCharacter(@RequestBody CharacterRequest characterRequest) {
-        System.out.println(characterRequest.getId());
+    public ResponseEntity<?> chooseCharacter(@RequestBody String id) {
+        System.out.println(id);
         User user = userService.getCurrentUser();
-        user.setSelectedCharacterId(characterRequest.getId());
+        user.setSelectedCharacterId(Long.valueOf(id));
         userService.save(user);
 
-        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        System.out.println("selectedCharacterID " + gameCharacter);
-        List<City> cities = cityRepository.findByListOfCitiesId(gameCharacter.getCity().getListOfCities().getId());
-        List<CityRequest> cityRequests = new ArrayList<>();
-        for (City city : cities) {
-            CityRequest cityRequest = new CityRequest();
-
-            cityRequest.setXCoord(city.getXCoord());
-            cityRequest.setYCoord(city.getYCoord());
-            cityRequest.setTerrainType(city.getTerrainType());
-
-            Map<String, String> enemies = new HashMap<>();
-
-            log.info("enemies "+city.getEnemy().toString());
-            for (var enemy : city.getEnemy()) {
-                enemies.put( enemy.getId().toString(),enemy.getName());
-            }
-            cityRequest.setEnemies(enemies);
-
-            cityRequests.add(cityRequest);
-        }
-
-        return ResponseEntity.ok(cityRequests);
+        return ResponseEntity.ok(user.getSelectedCharacterId());
     }
 
     private List<CharacterRequest> createCharacterRequestList() {
@@ -103,66 +87,117 @@ public class CharacterController {
                 characterRequest.setInte(character.getInte());
                 characterRequest.setGold(character.getGold());
                 characterRequest.setAgi(character.getAgi());
-                characterRequest.setXCoord(character.getCity().getXCoord());
-                characterRequest.setYCoord(character.getCity().getYCoord());
                 listCharacterRequest.add(characterRequest);
             }
         }
         return listCharacterRequest;
     }
 
+
+//    @GetMapping("/fight")
+//    private ResponseEntity<?> getFightData(){
+//        User user = userService.getCurrentUser();
+//        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+//    }
+
+    @PostMapping("/fight")
+    private ResponseEntity<?> fightData(@RequestBody String id) {
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+
+        System.out.println("fightData");
+
+        if (gameCharacter.isWait()) {
+            return ResponseEntity.ok("You are waiting. ");
+
+        }
+
+        return ResponseEntity.ok("attack");
+    }
+
+    @GetMapping("/lvlup")
+    private ResponseEntity<?> getPoints() {
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        LvlUpRequest lvlUpRequest = new LvlUpRequest();
+        lvlUpRequest.setUnallocatedMainPoints(gameCharacter.getUnallocatedMainPoints());
+        lvlUpRequest.setUnallocatedStrPoints(gameCharacter.getUnallocatedStrPoints());
+        lvlUpRequest.setUnallocatedAgiPoints(gameCharacter.getUnallocatedAgiPoints());
+        lvlUpRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
+        return ResponseEntity.ok(lvlUpRequest);
+    }
+
+    @PostMapping("/lvlup")
+    private ResponseEntity<?> setPoints(@RequestBody LvlUpRequest lvlUpRequest) {
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+
+        int sumClientMainPoints = lvlUpRequest.getStr() + lvlUpRequest.getAgi() + lvlUpRequest.getInte()
+                + lvlUpRequest.getUnallocatedMainPoints();//points received from the client
+        int sumServerMainPoints = gameCharacter.getUnallocatedMainPoints() + gameCharacter.getStr() +
+                gameCharacter.getAgi() + gameCharacter.getInte();
+        if (sumServerMainPoints == sumClientMainPoints) {
+            gameCharacter.setUnallocatedMainPoints(lvlUpRequest.getUnallocatedMainPoints());
+            gameCharacter.setStr(lvlUpRequest.getStr());
+            gameCharacter.setAgi(lvlUpRequest.getAgi());
+            gameCharacter.setInte(lvlUpRequest.getInte());
+        }
+
+        return ResponseEntity.ok("ok");
+    }
+
     @PostMapping("/move")
-    private ResponseEntity<?> moveCharacter(@RequestBody CharacterMove characterMove) {
+    private ResponseEntity<?> moveBattleCity(@RequestBody Long id) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
-        log.info("character move " + characterMove.getX() + " " + characterMove.getY());
+        City battleCity1 = new City();
+        battleCity1.setName("Battle City ");
+        cityRepository.save(battleCity1);
 
-        Long listOfCitiesId = gameCharacter.getCity().getListOfCities().getId();
-        List<City> listOfCity = cityRepository.findByListOfCitiesId(listOfCitiesId);
+        gameCharacter.setCity(cityRepository.getById(id));
+        characterRepository.save(gameCharacter);
 
-        City targetCity = null;
-        int currentX = gameCharacter.getCity().getXCoord();
-        int currentY = gameCharacter.getCity().getYCoord();
-        int targetX = characterMove.getX();
-        int targetY = characterMove.getY();
-        if (Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1)
-            for (City city : listOfCity) {
-                if (city.getXCoord() == characterMove.getX() && city.getYCoord() == characterMove.getY() &&
-                        TerrainTypes.PASSABLE_TERRAIN_TYPES.contains(city.getTerrainType())) {
-                    targetCity = city;
-                    gameCharacter.setCity(targetCity);
-                    characterRepository.save(gameCharacter);
-                    break;
-
-                }
-            }
-        if (targetCity == null) {
-            characterMove.setY(gameCharacter.getCity().getYCoord());
-            characterMove.setX(gameCharacter.getCity().getXCoord());
+        List<Enemy> enemies = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Enemy enemy = new Enemy(); // Will be loaded from the database in the future
+            enemy = enemyService.createEnemy(battleCity1);
+            enemies.add(enemy);
         }
 
-        return ResponseEntity.ok(characterMove);
+        battleCity1.setEnemy(enemies);
+        cityRepository.save(battleCity1);
+
+        List<EnemyRequest> enemiesRequest = new ArrayList<>();
+        for (var x : enemies) {
+            EnemyRequest enemy = new EnemyRequest();
+            enemy.setArmorPiercing(x.getArmorPiercing());
+            enemy.setDef(x.getDef());
+            enemy.setId(x.getId());
+            enemy.setName(x.getName());
+            enemy.setStr(x.getStr());
+            enemy.setAgi(x.getAgi());
+            enemy.setInte(x.getInte());
+            enemy.setHp(x.getHp());
+            enemy.setLatestDam(x.getLatestDam());
+            enemy.setCharId(x.getCharId());
+            enemiesRequest.add(enemy);
+        }
+
+        eventGenerator.startFightCycle(battleCity1); // Start the fight cycle for the new city
+
+        return ResponseEntity.ok(enemiesRequest);
     }
 
-    @PostMapping("/selectTarget")
-    private ResponseEntity<?> selectTarget(@RequestBody Integer id) {
-        log.info("select target " + id);
+    @PostMapping("/party")
+    public ResponseEntity<?> party(){
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        Optional<City> city = cityRepository.findById(gameCharacter.getCity().getId());
+        Party party = new Party();
+        gameCharacter.setParty(party);
 
-        Enemy enemy = enemyRepository.findEnemyById(Long.valueOf(id));
-        int currentX = gameCharacter.getCity().getXCoord();
-        int currentY = gameCharacter.getCity().getYCoord();
-        int targetX = enemy.getCity().getXCoord();
-        int targetY = enemy.getCity().getYCoord();
-        if (Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1) {
-            gameCharacter.setEnemyId(id);
-            characterRepository.save(gameCharacter);
-            return ResponseEntity.ok("ok");
-        } else {
-            return ResponseEntity.ok("Enemy is not within range");
-        }
-
+        return ResponseEntity.ok("Party created");
     }
+
 }

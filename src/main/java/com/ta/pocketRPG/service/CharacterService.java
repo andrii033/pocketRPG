@@ -5,7 +5,6 @@ import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,36 +12,52 @@ import java.util.List;
 @Slf4j
 @Service
 public class CharacterService {
-    @Autowired
-    private CharacterRepository characterRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CityService cityService;
+    private final CharacterRepository characterRepository;
+    private final UserService userService;
+    private final CityService cityService;
 
-    public GameCharacter createCharacter(CharacterRequest characterRequest) {
+    public CharacterService(CharacterRepository characterRepository, UserService userService, CityService cityService) {
+        this.characterRepository = characterRepository;
+        this.userService = userService;
+        this.cityService = cityService;
+    }
+
+    public void createCharacter(CharacterRequest characterRequest) {
         GameCharacter gameCharacter = new GameCharacter();
         gameCharacter.setCharacterName(characterRequest.getCharacterName());
-        gameCharacter.setStr(5);
-        gameCharacter.setAgi(5);
-        gameCharacter.setInte(5);
+        gameCharacter.setStr(1);
+        gameCharacter.setAgi(1);
+        gameCharacter.setInte(1);
+        gameCharacter.setPhysicalHarm(1);
+        gameCharacter.setArmorPiercing(1);
+        gameCharacter.setReduceBlockDam(1);
+        gameCharacter.setMaxHealth(1);
+        gameCharacter.setMaxHealth(1);
+        gameCharacter.setCritChance(1);
+        gameCharacter.setAttackSpeed(1);
+        gameCharacter.setAvoidance(1);
+        gameCharacter.setBlockChance(1);
+        gameCharacter.setMagicDam(1);
+        gameCharacter.setMagicCritChance(1);
+        gameCharacter.setManaRegen(1);
+        gameCharacter.setMaxMana(1);
         gameCharacter.setGold(1);
         gameCharacter.setRes(0);
+        gameCharacter.setExp(0);
+        gameCharacter.setLvl(1);
+        gameCharacter.setHp(10);
         gameCharacter.setUser(userService.getCurrentUser());
-        //gameCharacter.setEnemyId(1);
 
         User currentUser = userService.getCurrentUser();
         gameCharacter.setUser(currentUser);
 
         gameCharacter.setCity(cityService.getById(1L));
 
+        gameCharacter.setWait(true);
 
-        return characterRepository.save(gameCharacter);
+        characterRepository.save(gameCharacter);
     }
 
-    public List<GameCharacter> getAllCharacters() {
-        return characterRepository.findAll();
-    }
 
     public List<GameCharacter> charactersWithEnemies() {
         return characterRepository.findByEnemyIdNot(0);
@@ -51,4 +66,7 @@ public class CharacterService {
         characterRepository.saveAll(list);
     }
 
+    public List<GameCharacter> getCharactersByCity(Long cityId) {
+        return characterRepository.findByCityId(cityId);
+    }
 }
