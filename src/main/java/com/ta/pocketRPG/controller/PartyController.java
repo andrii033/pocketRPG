@@ -7,7 +7,6 @@ import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.repository.PartyRepository;
-import com.ta.pocketRPG.repository.UserRepository;
 import com.ta.pocketRPG.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +50,12 @@ public class PartyController {
 
         partyRepository.save(party); // Save the party (this will also save the GameCharacter association due to cascade settings)
 
-        List<GameCharacter> characters = new ArrayList<>();
+        List<GameCharacter> characters = new ArrayList<>(); //code for testing
+        characters = characterRepository.findAll();
+        for(GameCharacter character : characters){
+            character.setParty(party);
+        }
+        partyRepository.save(party);
 
 
 //        gameCharacter = characterRepository.getById(user.getSelectedCharacterId()+1); //delete this code
@@ -60,4 +64,5 @@ public class PartyController {
 
         return ResponseEntity.ok("Party created");
     }
+
 }

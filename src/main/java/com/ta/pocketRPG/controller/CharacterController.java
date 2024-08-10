@@ -5,7 +5,6 @@ import com.ta.pocketRPG.domain.dto.*;
 import com.ta.pocketRPG.domain.model.*;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
-import com.ta.pocketRPG.repository.PartyRepository;
 import com.ta.pocketRPG.service.CharacterService;
 import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
@@ -41,10 +40,10 @@ public class CharacterController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createCharacter(@RequestBody CharacterRequest characterRequest) {
+    public ResponseEntity<?> createCharacter(@RequestBody String name) {
         System.out.println("createCharacter");
         try {
-            characterService.createCharacter(characterRequest);
+            characterService.createCharacter(name);
             return ResponseEntity.ok("Character created successfully.");
         } catch (Exception e) {
             String errorMessage = "Failed to create character: " + e.getMessage();
@@ -150,7 +149,7 @@ public class CharacterController {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
-        log.info("moveBattleCity"+user.toString());
+        log.info("moveBattleCity"+ user);
 
         City battleCity1 = new City();
         battleCity1.setName("Battle City ");

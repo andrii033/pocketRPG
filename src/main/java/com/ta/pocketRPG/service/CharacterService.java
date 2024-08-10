@@ -1,6 +1,5 @@
 package com.ta.pocketRPG.service;
 
-import com.ta.pocketRPG.domain.dto.CharacterRequest;
 import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
@@ -22,9 +21,9 @@ public class CharacterService {
         this.cityService = cityService;
     }
 
-    public void createCharacter(CharacterRequest characterRequest) {
+    public void createCharacter(String name) {
         GameCharacter gameCharacter = new GameCharacter();
-        gameCharacter.setCharacterName(characterRequest.getCharacterName());
+        gameCharacter.setCharacterName(name);
         gameCharacter.setStr(1);
         gameCharacter.setAgi(1);
         gameCharacter.setInte(1);
@@ -59,9 +58,6 @@ public class CharacterService {
     }
 
 
-    public List<GameCharacter> charactersWithEnemies() {
-        return characterRepository.findByEnemyIdNot(0);
-    }
     public void saveAll(List<GameCharacter> list){
         characterRepository.saveAll(list);
     }
