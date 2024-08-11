@@ -40,10 +40,10 @@ public class CharacterController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createCharacter(@RequestBody String name) {
+    public ResponseEntity<?> createCharacter(@RequestBody CreateCharacterRequest characterRequest) {
         System.out.println("createCharacter");
         try {
-            characterService.createCharacter(name);
+            characterService.createCharacter(characterRequest);
             return ResponseEntity.ok("Character created successfully.");
         } catch (Exception e) {
             String errorMessage = "Failed to create character: " + e.getMessage();

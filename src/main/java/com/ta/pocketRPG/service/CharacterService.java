@@ -1,5 +1,6 @@
 package com.ta.pocketRPG.service;
 
+import com.ta.pocketRPG.domain.dto.CreateCharacterRequest;
 import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
@@ -21,12 +22,10 @@ public class CharacterService {
         this.cityService = cityService;
     }
 
-    public void createCharacter(String name) {
+    public void createCharacter(CreateCharacterRequest request) {
+
         GameCharacter gameCharacter = new GameCharacter();
-        gameCharacter.setCharacterName(name);
-        gameCharacter.setStr(1);
-        gameCharacter.setAgi(1);
-        gameCharacter.setInte(1);
+        gameCharacter.setCharacterName(request.getName());
         gameCharacter.setPhysicalHarm(1);
         gameCharacter.setArmorPiercing(1);
         gameCharacter.setReduceBlockDam(1);
@@ -40,11 +39,23 @@ public class CharacterService {
         gameCharacter.setMagicCritChance(1);
         gameCharacter.setManaRegen(1);
         gameCharacter.setMaxMana(1);
-        gameCharacter.setGold(1);
+        gameCharacter.setGold(0);
         gameCharacter.setRes(0);
         gameCharacter.setExp(0);
         gameCharacter.setLvl(1);
         gameCharacter.setHp(10);
+
+        if (request.getStr() + request.getAgi() + request.getInte() == 3) {
+            gameCharacter.setStr(request.getStr());
+            gameCharacter.setAgi(request.getAgi());
+            gameCharacter.setInte(request.getInte());
+
+        }else{
+            gameCharacter.setStr(1);
+            gameCharacter.setAgi(1);
+            gameCharacter.setInte(1);
+        }
+
         gameCharacter.setUser(userService.getCurrentUser());
 
         User currentUser = userService.getCurrentUser();
@@ -58,7 +69,7 @@ public class CharacterService {
     }
 
 
-    public void saveAll(List<GameCharacter> list){
+    public void saveAll(List<GameCharacter> list) {
         characterRepository.saveAll(list);
     }
 
