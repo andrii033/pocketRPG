@@ -53,12 +53,30 @@ public class CharacterController {
 
     @GetMapping("/choose")
     public ResponseEntity<?> chooseCharacter() {
-        List<CharacterRequest> listCharacterRequest = createCharacterRequestList();
+        List<CreateCharacterRequest> listCharacterRequest = createCharacterRequestList();
         if (!listCharacterRequest.isEmpty()) {
             return ResponseEntity.ok(listCharacterRequest);
         } else {
-            return ResponseEntity.notFound().build(); // Character request not found
+            return ResponseEntity.ok(listCharacterRequest); // Character request not found
         }
+    }
+
+    private List<CreateCharacterRequest> createCharacterRequestList() {
+        List<CreateCharacterRequest> listCharacterRequest = new ArrayList<>();
+        List<GameCharacter> gameCharacter = characterRepository.findGameCharacterByUser(userService.getCurrentUser());
+
+        if (gameCharacter != null) {
+            for (GameCharacter character : gameCharacter) {
+                CreateCharacterRequest characterRequest = new CreateCharacterRequest();
+                characterRequest.setName(character.getCharacterName());
+                characterRequest.setId(character.getId());
+                characterRequest.setStr(character.getStr());
+                characterRequest.setInte(character.getInte());
+                characterRequest.setAgi(character.getAgi());
+                listCharacterRequest.add(characterRequest);
+            }
+        }
+        return listCharacterRequest;
     }
 
     @PostMapping("/choose")
@@ -69,26 +87,6 @@ public class CharacterController {
         userService.save(user);
 
         return ResponseEntity.ok(user.getSelectedCharacterId());
-    }
-
-    private List<CharacterRequest> createCharacterRequestList() {
-        List<CharacterRequest> listCharacterRequest = new ArrayList<>();
-        List<GameCharacter> gameCharacter = characterRepository.findGameCharacterByUser(userService.getCurrentUser());
-
-        if (gameCharacter != null) {
-            for (GameCharacter character : gameCharacter) {
-                CharacterRequest characterRequest = new CharacterRequest();
-                characterRequest.setCharacterName(character.getCharacterName());
-                characterRequest.setId(character.getId());
-                characterRequest.setStr(character.getStr());
-                characterRequest.setRes(character.getRes());
-                characterRequest.setInte(character.getInte());
-                characterRequest.setGold(character.getGold());
-                characterRequest.setAgi(character.getAgi());
-                listCharacterRequest.add(characterRequest);
-            }
-        }
-        return listCharacterRequest;
     }
 
 
