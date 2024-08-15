@@ -73,6 +73,7 @@ public class CharacterController {
                 characterRequest.setStr(character.getStr());
                 characterRequest.setInte(character.getInte());
                 characterRequest.setAgi(character.getAgi());
+                characterRequest.setLvl(character.getLvl());
                 listCharacterRequest.add(characterRequest);
             }
         }
