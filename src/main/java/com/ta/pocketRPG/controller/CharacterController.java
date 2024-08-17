@@ -87,7 +87,21 @@ public class CharacterController {
         user.setSelectedCharacterId(Long.valueOf(id));
         userService.save(user);
 
-        return ResponseEntity.ok(user.getSelectedCharacterId());
+        GameCharacter gameCharacter = characterRepository.findById(Long.parseLong(id));
+        CharacterRequest characterRequest = new CharacterRequest();
+        characterRequest.setCharacterName(gameCharacter.getCharacterName());
+        characterRequest.setId(gameCharacter.getId());
+        characterRequest.setStr(gameCharacter.getStr());
+        characterRequest.setInte(gameCharacter.getInte());
+        characterRequest.setAgi(gameCharacter.getAgi());
+
+        characterRequest.setDef(gameCharacter.getDef());
+        characterRequest.setHp(gameCharacter.getHp());
+        characterRequest.setMana(gameCharacter.getMana());
+
+        characterRequest.setLvl(gameCharacter.getLvl());
+
+        return ResponseEntity.ok(characterRequest);
     }
 
 

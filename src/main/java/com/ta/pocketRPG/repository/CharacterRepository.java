@@ -12,4 +12,5 @@ public interface CharacterRepository extends JpaRepository<GameCharacter, Long> 
     List<GameCharacter> findByEnemyIdNot(int enemyId);
     List<GameCharacter> findGameCharacterByUser(User user);
     List<GameCharacter> findByCityId(Long cityId);
+    GameCharacter findById(long id);
 }
