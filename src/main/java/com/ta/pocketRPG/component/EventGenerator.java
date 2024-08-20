@@ -68,15 +68,15 @@ public class EventGenerator {
 
             if (enemy == null) continue;
 
-            int attackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2); // Calculate attack speed
-            int tempSpeed = character.getTempAttackSpeed();
-            tempSpeed = tempSpeed + attackSpeed;
-            if (tempSpeed - 60 > 0) {
-                character.setTempAttackSpeed(tempSpeed - 60);
-            } else {
-                character.setTempAttackSpeed(tempSpeed);
-                continue;
-            }
+//            int attackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2); // Calculate attack speed
+//            int tempSpeed = character.getTempAttackSpeed();
+//            tempSpeed = tempSpeed + attackSpeed;
+//            if (tempSpeed - 60 > 0) {
+//                character.setTempAttackSpeed(tempSpeed - 60);
+//            } else {
+//                character.setTempAttackSpeed(tempSpeed);
+//                continue;
+//            }
 
             int damage = calculateDamage(character, enemy); // Calculate damage
             character.setLatestDam(damage); // To send to the client
