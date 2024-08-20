@@ -28,6 +28,8 @@ public class CharacterController {
     private final EnemyService enemyService;
     private final EventGenerator eventGenerator;
 
+    private static int count;
+
     public CharacterController(CharacterService characterService, CharacterRepository characterRepository,
                                UserService userService, CityRepository cityRepository, EnemyService enemyService,
                                EventGenerator eventGenerator) {
@@ -82,7 +84,6 @@ public class CharacterController {
 
     @PostMapping("/choose")
     public ResponseEntity<?> chooseCharacter(@RequestBody String id) {
-        System.out.println(id);
         User user = userService.getCurrentUser();
         user.setSelectedCharacterId(Long.valueOf(id));
         userService.save(user);
@@ -165,7 +166,8 @@ public class CharacterController {
         log.info("moveBattleCity"+ user);
 
         City battleCity1 = new City();
-        battleCity1.setName("Battle City ");
+        battleCity1.setName("Battle City "+count);
+        count++;
         cityRepository.save(battleCity1);
 
         gameCharacter.setCity(cityRepository.getById(id));

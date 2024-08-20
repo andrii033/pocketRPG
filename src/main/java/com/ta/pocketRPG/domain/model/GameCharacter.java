@@ -51,7 +51,7 @@ public class GameCharacter {
     private int unallocatedIntePoints;
 
     private int latestDam;
-    private int tempAttackSpeed;
+    private int initiative;
 
     private boolean wait;
 

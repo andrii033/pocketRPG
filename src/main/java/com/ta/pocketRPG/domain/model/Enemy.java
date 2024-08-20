@@ -19,6 +19,7 @@ public class Enemy {
     private int def;
     private int armorPiercing;
     private Long charId;
+    private int initiative;
 
     @ManyToOne
     private City city;
