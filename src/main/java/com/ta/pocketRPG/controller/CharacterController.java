@@ -1,8 +1,14 @@
 package com.ta.pocketRPG.controller;
 
 import com.ta.pocketRPG.component.EventGenerator;
-import com.ta.pocketRPG.domain.dto.*;
-import com.ta.pocketRPG.domain.model.*;
+import com.ta.pocketRPG.domain.dto.CharacterRequest;
+import com.ta.pocketRPG.domain.dto.CreateCharacterRequest;
+import com.ta.pocketRPG.domain.dto.EnemyRequest;
+import com.ta.pocketRPG.domain.dto.LvlUpRequest;
+import com.ta.pocketRPG.domain.model.City;
+import com.ta.pocketRPG.domain.model.Enemy;
+import com.ta.pocketRPG.domain.model.GameCharacter;
+import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.service.CharacterService;
@@ -106,67 +112,69 @@ public class CharacterController {
     }
 
 
-//    @GetMapping("/fight")
-//    private ResponseEntity<?> getFightData(){
-//        User user = userService.getCurrentUser();
-//        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-//    }
-
     @PostMapping("/fight")
-    private ResponseEntity<?> fightData(@RequestBody String id) {
+    public ResponseEntity<?> fightData(@RequestBody String id) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        System.out.println("enemy id "+id);
+        gameCharacter.setEnemyId(Integer.parseInt(id));
+        characterRepository.save(gameCharacter);
 
-        System.out.println("fightData");
+        System.out.println("fightData: CharacterName={} " +gameCharacter.getCharacterName()+ " " +gameCharacter.getEnemyId() );
+
+//        user = userService.getCurrentUser();
+//        gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+//
+//        System.out.println("enemy id "+gameCharacter.getEnemyId());
 
         if (gameCharacter.isWait()) {
-            return ResponseEntity.ok("You are waiting. ");
-
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("You are waiting.");
         }
 
         return ResponseEntity.ok("attack");
+
     }
 
-    @GetMapping("/lvlup")
-    private ResponseEntity<?> getPoints() {
-        User user = userService.getCurrentUser();
-        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        LvlUpRequest lvlUpRequest = new LvlUpRequest();
-        lvlUpRequest.setUnallocatedMainPoints(gameCharacter.getUnallocatedMainPoints());
-        lvlUpRequest.setUnallocatedStrPoints(gameCharacter.getUnallocatedStrPoints());
-        lvlUpRequest.setUnallocatedAgiPoints(gameCharacter.getUnallocatedAgiPoints());
-        lvlUpRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
-        return ResponseEntity.ok(lvlUpRequest);
-    }
-
-    @PostMapping("/lvlup")
-    private ResponseEntity<?> setPoints(@RequestBody LvlUpRequest lvlUpRequest) {
-        User user = userService.getCurrentUser();
-        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-
-        int sumClientMainPoints = lvlUpRequest.getStr() + lvlUpRequest.getAgi() + lvlUpRequest.getInte()
-                + lvlUpRequest.getUnallocatedMainPoints();//points received from the client
-        int sumServerMainPoints = gameCharacter.getUnallocatedMainPoints() + gameCharacter.getStr() +
-                gameCharacter.getAgi() + gameCharacter.getInte();
-        if (sumServerMainPoints == sumClientMainPoints) {
-            gameCharacter.setUnallocatedMainPoints(lvlUpRequest.getUnallocatedMainPoints());
-            gameCharacter.setStr(lvlUpRequest.getStr());
-            gameCharacter.setAgi(lvlUpRequest.getAgi());
-            gameCharacter.setInte(lvlUpRequest.getInte());
-        }
-
-        return ResponseEntity.ok("ok");
-    }
+//    @GetMapping("/lvlup")
+//    private ResponseEntity<?> getPoints() {
+//        User user = userService.getCurrentUser();
+//        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+//        LvlUpRequest lvlUpRequest = new LvlUpRequest();
+//        lvlUpRequest.setUnallocatedMainPoints(gameCharacter.getUnallocatedMainPoints());
+//        lvlUpRequest.setUnallocatedStrPoints(gameCharacter.getUnallocatedStrPoints());
+//        lvlUpRequest.setUnallocatedAgiPoints(gameCharacter.getUnallocatedAgiPoints());
+//        lvlUpRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
+//        return ResponseEntity.ok(lvlUpRequest);
+//    }
+//
+//    @PostMapping("/lvlup")
+//    private ResponseEntity<?> setPoints(@RequestBody LvlUpRequest lvlUpRequest) {
+//        User user = userService.getCurrentUser();
+//        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+//
+//        int sumClientMainPoints = lvlUpRequest.getStr() + lvlUpRequest.getAgi() + lvlUpRequest.getInte()
+//                + lvlUpRequest.getUnallocatedMainPoints();//points received from the client
+//        int sumServerMainPoints = gameCharacter.getUnallocatedMainPoints() + gameCharacter.getStr() +
+//                gameCharacter.getAgi() + gameCharacter.getInte();
+//        if (sumServerMainPoints == sumClientMainPoints) {
+//            gameCharacter.setUnallocatedMainPoints(lvlUpRequest.getUnallocatedMainPoints());
+//            gameCharacter.setStr(lvlUpRequest.getStr());
+//            gameCharacter.setAgi(lvlUpRequest.getAgi());
+//            gameCharacter.setInte(lvlUpRequest.getInte());
+//        }
+//
+//        return ResponseEntity.ok("ok");
+//    }
 
     @PostMapping("/move")
     private ResponseEntity<?> moveBattleCity(@RequestBody Long id) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
-        log.info("moveBattleCity"+ user);
+        log.info("moveBattleCity" + user);
 
         City battleCity1 = new City();
-        battleCity1.setName("Battle City "+count);
+        battleCity1.setName("Battle City " + count);
         count++;
         cityRepository.save(battleCity1);
 
@@ -202,7 +210,6 @@ public class CharacterController {
 
         return ResponseEntity.ok(enemiesRequest);
     }
-
 
 
 }

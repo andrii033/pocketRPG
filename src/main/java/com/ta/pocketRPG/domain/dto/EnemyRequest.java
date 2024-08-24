@@ -8,10 +8,10 @@ import lombok.Setter;
 public class EnemyRequest {
     private Long id;
     private String name;
-    private int str=1;
-    private int agi=1;
-    private int inte=1;
-    private int hp=10;
+    private int str;
+    private int agi;
+    private int inte;
+    private int hp;
     private int latestDam;
     private int def;
     private int armorPiercing;

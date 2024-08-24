@@ -41,7 +41,7 @@ public class GameCharacter {
     private int gold;
     private int res;
 
-    private Integer enemyId;
+    private int enemyId;
     private int exp;
     private int lvl;
 
