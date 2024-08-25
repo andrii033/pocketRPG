@@ -115,25 +115,40 @@ public class CharacterController {
     @PostMapping("/fight")
     public ResponseEntity<?> fightData(@RequestBody String id) {
         User user = userService.getCurrentUser();
-        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-        System.out.println("enemy id "+id);
-        gameCharacter.setEnemyId(Integer.parseInt(id));
-        characterRepository.save(gameCharacter);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+        }
 
-        System.out.println("fightData: CharacterName={} " +gameCharacter.getCharacterName()+ " " +gameCharacter.getEnemyId() );
+        GameCharacter gameCharacter;
+        try {
+            gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+            if (gameCharacter == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Character not found.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve character.");
+        }
 
-//        user = userService.getCurrentUser();
-//        gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-//
-//        System.out.println("enemy id "+gameCharacter.getEnemyId());
+        System.out.println("Enemy id: " + id);
+
+        try {
+            gameCharacter.setEnemyId(Integer.parseInt(id));
+            characterRepository.save(gameCharacter);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid enemy ID format.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save character.");
+        }
+
+        System.out.println("fightData: CharacterName=" + gameCharacter.getCharacterName() + ", EnemyId=" + gameCharacter.getEnemyId());
 
         if (gameCharacter.isWait()) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("You are waiting.");
+            return ResponseEntity.ok("You are waiting.");
         }
 
         return ResponseEntity.ok("attack");
-
     }
+
 
 //    @GetMapping("/lvlup")
 //    private ResponseEntity<?> getPoints() {
