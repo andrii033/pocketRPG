@@ -1,10 +1,7 @@
 package com.ta.pocketRPG.controller;
 
 import com.ta.pocketRPG.component.EventGenerator;
-import com.ta.pocketRPG.domain.dto.CharacterRequest;
-import com.ta.pocketRPG.domain.dto.CreateCharacterRequest;
-import com.ta.pocketRPG.domain.dto.EnemyRequest;
-import com.ta.pocketRPG.domain.dto.LvlUpRequest;
+import com.ta.pocketRPG.domain.dto.*;
 import com.ta.pocketRPG.domain.model.City;
 import com.ta.pocketRPG.domain.model.Enemy;
 import com.ta.pocketRPG.domain.model.GameCharacter;
@@ -118,10 +115,12 @@ public class CharacterController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
         }
-
+        FightRequest fightRequest = new FightRequest();
         GameCharacter gameCharacter;
         try {
             gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+            fightRequest.setCharacterRequest(mapGameCharacterToCharacterRequest(gameCharacter));
+
             if (gameCharacter == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Character not found.");
             }
@@ -142,12 +141,60 @@ public class CharacterController {
 
         System.out.println("fightData: CharacterName=" + gameCharacter.getCharacterName() + ", EnemyId=" + gameCharacter.getEnemyId());
 
-        if (gameCharacter.isWait()) {
-            return ResponseEntity.ok("You are waiting.");
-        }
+//        if (gameCharacter.isWait()) {
+//            return ResponseEntity.ok("You are waiting.");
+//        }
 
-        return ResponseEntity.ok("attack");
+        return ResponseEntity.ok(fightRequest);
     }
+
+    private CharacterRequest mapGameCharacterToCharacterRequest(GameCharacter gameCharacter) {
+        CharacterRequest characterRequest = new CharacterRequest();
+
+        // Map basic fields
+        characterRequest.setCharacterName(gameCharacter.getCharacterName());
+        characterRequest.setId(gameCharacter.getId());
+
+        characterRequest.setStr(gameCharacter.getStr());
+        characterRequest.setAgi(gameCharacter.getAgi());
+        characterRequest.setInte(gameCharacter.getInte());
+
+        characterRequest.setDef(gameCharacter.getDef());
+        characterRequest.setHp(gameCharacter.getHp());
+        characterRequest.setMana(gameCharacter.getMana());
+
+        characterRequest.setPhysicalHarm(gameCharacter.getPhysicalHarm());
+        characterRequest.setArmorPiercing(gameCharacter.getArmorPiercing());
+        characterRequest.setReduceBlockDam(gameCharacter.getReduceBlockDam());
+        characterRequest.setMaxHealth(gameCharacter.getMaxHealth());
+
+        characterRequest.setCritChance(gameCharacter.getCritChance());
+        characterRequest.setAttackSpeed(gameCharacter.getAttackSpeed());
+        characterRequest.setAvoidance(gameCharacter.getAvoidance());
+        characterRequest.setBlockChance(gameCharacter.getBlockChance());
+
+        characterRequest.setMagicDam(gameCharacter.getMagicDam());
+        characterRequest.setMagicCritChance(gameCharacter.getMagicCritChance());
+        characterRequest.setManaRegen(gameCharacter.getManaRegen());
+        characterRequest.setMaxMana(gameCharacter.getMaxMana());
+
+        characterRequest.setGold(gameCharacter.getGold());
+        characterRequest.setRes(gameCharacter.getRes());
+
+        characterRequest.setExp(gameCharacter.getExp());
+        characterRequest.setLvl(gameCharacter.getLvl());
+
+        characterRequest.setUnallocatedMainPoints(gameCharacter.getUnallocatedMainPoints());
+        characterRequest.setUnallocatedStrPoints(gameCharacter.getUnallocatedStrPoints());
+        characterRequest.setUnallocatedAgiPoints(gameCharacter.getUnallocatedAgiPoints());
+        characterRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
+
+        characterRequest.setLatestDamage(gameCharacter.getLatestDam());
+        characterRequest.setWait(gameCharacter.isWait());
+
+        return characterRequest;
+    }
+
 
 
 //    @GetMapping("/lvlup")

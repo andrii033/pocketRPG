@@ -1,15 +1,11 @@
 package com.ta.pocketRPG.domain.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class FightRequest {
-    private String characterName;
-    private int characterHp;
-    private int characterLatestDam;
-    private long enemyId;
-    private int enemyHp;
-    private int enemyLatestDam;
+    private CharacterRequest characterRequest;
+    private EnemyRequest enemyRequest;
 }

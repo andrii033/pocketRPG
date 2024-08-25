@@ -42,4 +42,7 @@ public class CharacterRequest {
     private int unallocatedStrPoints;
     private int unallocatedAgiPoints;
     private int unallocatedIntePoints;
+
+    private int latestDamage;
+    private boolean wait;
 }
