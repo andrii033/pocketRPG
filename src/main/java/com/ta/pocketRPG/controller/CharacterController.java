@@ -8,6 +8,7 @@ import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.domain.model.User;
 import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.CityRepository;
+import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
 import com.ta.pocketRPG.service.EnemyService;
 import com.ta.pocketRPG.service.UserService;
@@ -32,16 +33,18 @@ public class CharacterController {
     private final EventGenerator eventGenerator;
 
     private static int count;
+    private final EnemyRepository enemyRepository;
 
     public CharacterController(CharacterService characterService, CharacterRepository characterRepository,
                                UserService userService, CityRepository cityRepository, EnemyService enemyService,
-                               EventGenerator eventGenerator) {
+                               EventGenerator eventGenerator, EnemyRepository enemyRepository) {
         this.characterService = characterService;
         this.characterRepository = characterRepository;
         this.userService = userService;
         this.cityRepository = cityRepository;
         this.enemyService = enemyService;
         this.eventGenerator = eventGenerator;
+        this.enemyRepository = enemyRepository;
     }
 
     @PostMapping("/create")
@@ -120,6 +123,8 @@ public class CharacterController {
         try {
             gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
             fightRequest.setCharacterRequest(mapGameCharacterToCharacterRequest(gameCharacter));
+            List<EnemyRequest> enemyRequests = enemyService.findEnemiesAndMapToEnemyRequest(gameCharacter.getCity());
+            fightRequest.setEnemyRequest(enemyRequests);
 
             if (gameCharacter == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Character not found.");
@@ -141,12 +146,11 @@ public class CharacterController {
 
         System.out.println("fightData: CharacterName=" + gameCharacter.getCharacterName() + ", EnemyId=" + gameCharacter.getEnemyId());
 
-//        if (gameCharacter.isWait()) {
-//            return ResponseEntity.ok("You are waiting.");
-//        }
-
         return ResponseEntity.ok(fightRequest);
     }
+
+
+
 
     private CharacterRequest mapGameCharacterToCharacterRequest(GameCharacter gameCharacter) {
         CharacterRequest characterRequest = new CharacterRequest();
