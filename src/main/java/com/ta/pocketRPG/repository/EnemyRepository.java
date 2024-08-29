@@ -14,6 +14,7 @@ public interface EnemyRepository extends JpaRepository<Enemy,Long> {
     Enemy findEnemyById(Long id);
     Optional<Enemy> findById(Long id);
     List<Enemy> findByCity(City city);
+    List<Enemy> findByCityId(Long cityId);
 
     void deleteById(int enemyId);
 }

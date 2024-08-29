@@ -5,15 +5,13 @@ import com.ta.pocketRPG.domain.model.Enemy;
 import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
+import com.ta.pocketRPG.service.EnemyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -23,14 +21,16 @@ public class EventGenerator {
     private final CharacterService characterService;
     private final EnemyRepository enemyRepository;
     private final Random random = new Random();
+    private final EnemyService enemyService;
     private AtomicBoolean stopFlag = new AtomicBoolean(false);
     private int counter = 0;
 
     private final Map<Long, Boolean> activeRooms = new HashMap<>();
 
-    public EventGenerator(CharacterService characterService, EnemyRepository enemyRepository) {
+    public EventGenerator(CharacterService characterService, EnemyRepository enemyRepository, EnemyService enemyService) {
         this.characterService = characterService;
         this.enemyRepository = enemyRepository;
+        this.enemyService = enemyService;
     }
 
     @Scheduled(fixedRate = 1000)
@@ -62,12 +62,28 @@ public class EventGenerator {
     }
 
     private void processRoomEvents(Long cityId) {
-//        List<GameCharacter> characterFightList = characterService.getCharactersByCity(cityId);
-//        for (var character : characterFightList) {
-//            Enemy enemy = enemyRepository.findById(Long.valueOf(character.getEnemyId())).orElse(null); // Find enemy
-//
-//            if (enemy == null) continue;
-//
+        List<GameCharacter> characterFightList = characterService.getCharactersByCity(cityId);
+        List<Enemy> enemies = enemyRepository.findByCityId(cityId);
+
+        List<Combatant> queue = new ArrayList<>();
+
+        // add all character
+        for (GameCharacter character : characterFightList) {
+            queue.add(new Combatant(character, character.getInitiative()));
+        }
+
+        // add all enemies
+        for (Enemy enemy : enemies) {
+            queue.add(new Combatant(enemy, enemy.getInitiative()));
+        }
+
+        // sort
+        Collections.sort(queue, Comparator.comparingInt(Combatant::getInitiative).reversed());
+
+        for (var combatant : queue) {
+            //Enemy enemy = enemyRepository.findById(Long.valueOf(character.getEnemyId())).orElse(null); // Find enemy
+
+
 //            int attackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2); // Calculate attack speed
 //            int tempSpeed = character.getTempAttackSpeed();
 //            tempSpeed = tempSpeed + attackSpeed;
@@ -96,8 +112,8 @@ public class EventGenerator {
 //                enemyRepository.deleteById(enemyId);
 //            }
 //            enemy.setCharId(character.getId());
-//        }
-//        characterService.saveAll(characterFightList);
+        }
+        characterService.saveAll(characterFightList);
     }
 
 //    private static void lvlUp(GameCharacter character) {
@@ -130,4 +146,22 @@ public class EventGenerator {
 //        }
 //        return damage;
 //    }
+}
+
+class Combatant {
+    private final Object character;
+    private final int initiative;
+
+    public Combatant(Object character, int initiative) {
+        this.character = character;
+        this.initiative = initiative;
+    }
+
+    public Object getCharacter() {
+        return character;
+    }
+
+    public int getInitiative() {
+        return initiative;
+    }
 }
