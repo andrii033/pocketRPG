@@ -244,7 +244,7 @@ public class CharacterController {
         count++;
         cityRepository.save(battleCity1);
 
-        gameCharacter.setCity(cityRepository.getById(id));
+        gameCharacter.setCity(battleCity1);
         characterRepository.save(gameCharacter);
 
         List<Enemy> enemies = new ArrayList<>();

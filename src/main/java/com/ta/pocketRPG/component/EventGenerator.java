@@ -3,6 +3,7 @@ package com.ta.pocketRPG.component;
 import com.ta.pocketRPG.domain.model.City;
 import com.ta.pocketRPG.domain.model.Enemy;
 import com.ta.pocketRPG.domain.model.GameCharacter;
+import com.ta.pocketRPG.repository.CharacterRepository;
 import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
 import com.ta.pocketRPG.service.EnemyService;
@@ -22,15 +23,17 @@ public class EventGenerator {
     private final EnemyRepository enemyRepository;
     private final Random random = new Random();
     private final EnemyService enemyService;
+    private final CharacterRepository characterRepository;
     private AtomicBoolean stopFlag = new AtomicBoolean(false);
     private int counter = 0;
 
     private final Map<Long, Boolean> activeRooms = new HashMap<>();
 
-    public EventGenerator(CharacterService characterService, EnemyRepository enemyRepository, EnemyService enemyService) {
+    public EventGenerator(CharacterService characterService, EnemyRepository enemyRepository, EnemyService enemyService, CharacterRepository characterRepository) {
         this.characterService = characterService;
         this.enemyRepository = enemyRepository;
         this.enemyService = enemyService;
+        this.characterRepository = characterRepository;
     }
 
     @Scheduled(fixedRate = 1000)
@@ -62,13 +65,17 @@ public class EventGenerator {
     }
 
     private void processRoomEvents(Long cityId) {
-        List<GameCharacter> characterFightList = characterService.getCharactersByCity(cityId);
+        System.out.println("Processing room events for city " + cityId);
+        List<GameCharacter> characterFightList = characterRepository.findByCityId(cityId);
         List<Enemy> enemies = enemyRepository.findByCityId(cityId);
+
+        System.out.println("Character count: " + characterFightList.size());
 
         List<Combatant> queue = new ArrayList<>();
 
         // add all character
         for (GameCharacter character : characterFightList) {
+            System.out.println("Processing character " + character.getCharacterName());
             queue.add(new Combatant(character, character.getInitiative()));
         }
 
@@ -81,7 +88,12 @@ public class EventGenerator {
         Collections.sort(queue, Comparator.comparingInt(Combatant::getInitiative).reversed());
 
         for (var combatant : queue) {
-            //Enemy enemy = enemyRepository.findById(Long.valueOf(character.getEnemyId())).orElse(null); // Find enemy
+            Object character = combatant.getCharacter();
+            if (character instanceof GameCharacter) {
+                System.out.println("Combatant: GameCharacter with ID " + ((GameCharacter) character).getId() + " Initiative: " + combatant.getInitiative());
+            } else if (character instanceof Enemy) {
+                System.out.println("Combatant: Enemy with ID " + ((Enemy) character).getId() + " Initiative: " + combatant.getInitiative());
+            }
 
 
 //            int attackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2); // Calculate attack speed
