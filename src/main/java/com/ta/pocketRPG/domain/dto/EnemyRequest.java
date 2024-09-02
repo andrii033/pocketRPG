@@ -16,4 +16,5 @@ public class EnemyRequest {
     private int def;
     private int armorPiercing;
     private Long charId;
+    private int initiative;
 }

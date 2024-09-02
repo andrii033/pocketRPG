@@ -105,6 +105,7 @@ public class CharacterController {
         characterRequest.setDef(gameCharacter.getDef());
         characterRequest.setHp(gameCharacter.getHp());
         characterRequest.setMana(gameCharacter.getMana());
+        characterRequest.setInitiative(gameCharacter.getInitiative());
 
         characterRequest.setLvl(gameCharacter.getLvl());
 

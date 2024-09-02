@@ -44,6 +44,7 @@ public class CharacterService {
         gameCharacter.setExp(0);
         gameCharacter.setLvl(1);
         gameCharacter.setHp(10);
+        gameCharacter.setInitiative(10);
 
         if (request.getStr() + request.getAgi() + request.getInte() == 3) {
             gameCharacter.setStr(request.getStr());
