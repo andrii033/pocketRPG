@@ -4,6 +4,7 @@ import com.ta.pocketRPG.domain.model.City;
 import com.ta.pocketRPG.domain.model.Enemy;
 import com.ta.pocketRPG.domain.model.GameCharacter;
 import com.ta.pocketRPG.repository.CharacterRepository;
+import com.ta.pocketRPG.repository.CityRepository;
 import com.ta.pocketRPG.repository.EnemyRepository;
 import com.ta.pocketRPG.service.CharacterService;
 import com.ta.pocketRPG.service.EnemyService;
@@ -24,22 +25,28 @@ public class EventGenerator {
     private final Random random = new Random();
     private final EnemyService enemyService;
     private final CharacterRepository characterRepository;
+    private final CityRepository cityRepository;
     private AtomicBoolean stopFlag = new AtomicBoolean(false);
     private int counter = 0;
 
+    List<GameCharacter> characterFightList;
+    List<Enemy> enemies;
+
     private final Map<Long, Boolean> activeRooms = new HashMap<>();
 
-    public EventGenerator(CharacterService characterService, EnemyRepository enemyRepository, EnemyService enemyService, CharacterRepository characterRepository) {
+    public EventGenerator(CharacterService characterService, EnemyRepository enemyRepository, EnemyService enemyService, CharacterRepository characterRepository, CityRepository cityRepository, CityRepository cityRepository1) {
         this.characterService = characterService;
         this.enemyRepository = enemyRepository;
         this.enemyService = enemyService;
         this.characterRepository = characterRepository;
+        this.cityRepository = cityRepository1;
+
     }
 
     @Scheduled(fixedRate = 1000)
     @Transactional
     public void generateEvent() {
-        if (counter == 10 || stopFlag.get()) {
+        if (counter == 5 || stopFlag.get()) {
             for (Long cityId : activeRooms.keySet()) {
                 //log.info("City: " + cityId);
                 if (activeRooms.get(cityId)) {
@@ -65,35 +72,17 @@ public class EventGenerator {
     }
 
     private void processRoomEvents(Long cityId) {
-        System.out.println("Processing room events for city " + cityId);
         List<GameCharacter> characterFightList = characterRepository.findByCityId(cityId);
         List<Enemy> enemies = enemyRepository.findByCityId(cityId);
 
-        System.out.println("Character count: " + characterFightList.size());
-
-        List<Combatant> queue = new ArrayList<>();
-
-        // add all character
-        for (GameCharacter character : characterFightList) {
-            System.out.println("Processing character " + character.getCharacterName());
-            queue.add(new Combatant(character, character.getInitiative()));
-        }
-
-        // add all enemies
-        for (Enemy enemy : enemies) {
-            queue.add(new Combatant(enemy, enemy.getInitiative()));
-        }
-
-        // sort
-        Collections.sort(queue, Comparator.comparingInt(Combatant::getInitiative).reversed());
-
-        for (var combatant : queue) {
-            Object character = combatant.getCharacter();
-            if (character instanceof GameCharacter) {
-                System.out.println("Combatant: GameCharacter with ID " + ((GameCharacter) character).getId() + " Initiative: " + combatant.getInitiative());
-            } else if (character instanceof Enemy) {
-                System.out.println("Combatant: Enemy with ID " + ((Enemy) character).getId() + " Initiative: " + combatant.getInitiative());
+        for (GameCharacter gameCharacter : characterFightList) {
+            for (Enemy enemy : enemies){
+                if (gameCharacter.getEnemyId() == enemy.getId()){
+                    enemy.setHp(enemy.getHp()-gameCharacter.getStr());
+                }
             }
+        }
+
 
 
 //            int attackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2); // Calculate attack speed
@@ -124,7 +113,7 @@ public class EventGenerator {
 //                enemyRepository.deleteById(enemyId);
 //            }
 //            enemy.setCharId(character.getId());
-        }
+        enemyRepository.saveAll(enemies);
         characterService.saveAll(characterFightList);
     }
 

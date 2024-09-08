@@ -15,6 +15,7 @@ public class City {
     private Long id;
 
     private String name;
+    private String turn;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
     private List<GameCharacter> characters = new ArrayList<>();

@@ -21,6 +21,8 @@ public class Enemy {
     private Long charId;
     private int initiative;
 
+    private boolean wait;
+
     @ManyToOne
     private City city;
 }
