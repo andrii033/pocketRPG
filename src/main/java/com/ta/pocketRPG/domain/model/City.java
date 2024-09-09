@@ -15,9 +15,8 @@ public class City {
     private Long id;
 
     private String name;
-    private String turn;
 
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "city", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<GameCharacter> characters = new ArrayList<>();
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)

@@ -134,8 +134,6 @@ public class CharacterController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve character.");
         }
 
-        System.out.println("Enemy id: " + id);
-
         try {
             gameCharacter.setEnemyId(Integer.parseInt(id));
             characterRepository.save(gameCharacter);
@@ -144,8 +142,6 @@ public class CharacterController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save character.");
         }
-
-        System.out.println("fightData: CharacterName=" + gameCharacter.getCharacterName() + ", EnemyId=" + gameCharacter.getEnemyId());
 
         return ResponseEntity.ok(fightRequest);
     }
@@ -249,7 +245,7 @@ public class CharacterController {
         characterRepository.save(gameCharacter);
 
         List<Enemy> enemies = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             Enemy enemy = enemyService.createEnemy(battleCity1);
             enemies.add(enemy);
         }
@@ -273,7 +269,7 @@ public class CharacterController {
             enemiesRequest.add(enemy);
         }
 
-        eventGenerator.startFightCycle(battleCity1); // Start the fight cycle for the new city
+        eventGenerator.startFightCycle(battleCity1.getId()); // Start the fight cycle for the new city
 
         return ResponseEntity.ok(enemiesRequest);
     }
