@@ -41,19 +41,6 @@ public class EventGenerator {
     @Scheduled(fixedRate = 5000)
     @Transactional
     public void generateEvent() {
-
-//        if (counter == 5 || stopFlag.get()) {
-//            for (Long cityId : activeRooms.keySet()) {
-//                //log.info("City: " + cityId);
-//                if (activeRooms.get(cityId)) {
-//                    processRoomEvents(cityId);
-//                }
-//            }
-//            counter = 0;
-//            stopFlag.set(false);
-//        } else {
-//            counter++;
-//        }
         for (Long cityId : activeRooms.keySet()) {
             log.info("City: " + cityId);
             if (activeRooms.get(cityId)) {
@@ -72,7 +59,6 @@ public class EventGenerator {
                         character.setCity(cityRepository.findCityById(1));
                     }
                     cityRepository.deleteById(cityId);
-
                 }
             }
         }
@@ -106,7 +92,6 @@ public class EventGenerator {
                 }
             }
         }
-
 
 //            int attackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2); // Calculate attack speed
 //            int tempSpeed = character.getTempAttackSpeed();
