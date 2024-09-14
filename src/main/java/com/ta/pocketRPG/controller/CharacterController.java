@@ -191,7 +191,6 @@ public class CharacterController {
         characterRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
 
         characterRequest.setLatestDamage(gameCharacter.getLatestDam());
-        characterRequest.setWait(gameCharacter.isWait());
 
         return characterRequest;
     }

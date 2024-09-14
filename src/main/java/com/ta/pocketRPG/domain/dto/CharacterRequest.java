@@ -1,10 +1,8 @@
 package com.ta.pocketRPG.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CharacterRequest {
     private String characterName;
     private Long id;
@@ -45,5 +43,5 @@ public class CharacterRequest {
 
     private int latestDamage;
     private int initiative;
-    private boolean wait;
+    private boolean win;
 }

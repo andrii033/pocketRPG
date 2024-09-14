@@ -55,7 +55,7 @@ public class EventGenerator {
                 } else {
                     stopFightCycle(cityId);
                     //move to start city
-                    for (GameCharacter character: characterFightList){
+                    for (GameCharacter character : characterFightList) {
                         character.setCity(cityRepository.findCityById(1));
                     }
                     cityRepository.deleteById(cityId);
@@ -84,7 +84,11 @@ public class EventGenerator {
         for (GameCharacter gameCharacter : characterFightList) {
             for (Enemy enemy : enemies) {
                 if (gameCharacter.getEnemyId() == enemy.getId()) {
-                    enemy.setHp(enemy.getHp() - (gameCharacter.getStr() + gameCharacter.getAgi()+10));
+                    int damage = calculateDamage(gameCharacter, enemy);
+                    log.info("Damage: " + damage);
+                    enemy.setHp(enemy.getHp() - damage);
+                    gameCharacter.setExp(gameCharacter.getExp()+damage);
+                    lvlUp(gameCharacter);
                     if (enemy.getHp() <= 0) {
                         enemy.setHp(0);
                     }
@@ -93,66 +97,38 @@ public class EventGenerator {
             }
         }
 
-//            int attackSpeed = 30 + character.getAttackSpeed() + (character.getLvl() / 2); // Calculate attack speed
-//            int tempSpeed = character.getTempAttackSpeed();
-//            tempSpeed = tempSpeed + attackSpeed;
-//            if (tempSpeed - 60 > 0) {
-//                character.setTempAttackSpeed(tempSpeed - 60);
-//            } else {
-//                character.setTempAttackSpeed(tempSpeed);
-//                continue;
-//            }
-//
-//            int damage = calculateDamage(character, enemy); // Calculate damage
-//            character.setLatestDam(damage); // To send to the client
-//            enemy.setHp(enemy.getHp() - damage); // Attack
-//
-//            int exp = (int) Math.ceil((double) damage / 3); // Calculate experience
-//            character.addExp(exp);
-//
-//            log.info("Added exp " + exp + " damage " + damage + " char exp " + character.getExp());
-//
-//            lvlUp(character);
-//
-//            if (enemy.getHp() <= 0) {
-//                log.info("You have defeated the enemy with id " + character.getEnemyId());
-//                long enemyId = character.getEnemyId();
-//                character.setEnemyId(0);
-//                enemyRepository.deleteById(enemyId);
-//            }
-//            enemy.setCharId(character.getId());
         enemyRepository.saveAll(enemies);
         characterService.saveAll(characterFightList);
     }
 
-//    private static void lvlUp(GameCharacter character) {
-//        if (character.getExp() > character.getLvl() * 50) {
-//            character.setExp(0);
-//            character.setLvl(character.getLvl() + 1);
-//            if (character.getLvl() % 2 == 0) {
-//                character.setUnallocatedMainPoints(character.getUnallocatedMainPoints() + 3);
-//            } else {
-//                character.addSecondaryPoints();
-//            }
-//
-//            log.info("Character leveled up!");
-//        }
-//    }
-//
-//    private int calculateDamage(GameCharacter character, Enemy enemy) {
-//        int damage;
-//        int minDam = 1 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
-//        int maxDam = 3 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
-//
-//        damage = minDam + random.nextInt((maxDam - minDam) + 1); // Damage calculation
-//        int defTemp = enemy.getDef() - character.getArmorPiercing();
-//        if (defTemp > 0) {
-//            damage = damage - defTemp;
-//        }
-//        int luckChance = random.nextInt(1000) + 1; // 0.1 point crit chance for 1 point agility
-//        if (luckChance < character.getCritChance()) {
-//            damage *= 2;
-//        }
-//        return damage;
-//    }
+    private static void lvlUp(GameCharacter character) {
+        if (character.getExp() > character.getLvl() * 50) {
+            character.setExp(0);
+            character.setLvl(character.getLvl() + 1);
+            if (character.getLvl() % 2 == 0) {
+                character.setUnallocatedMainPoints(character.getUnallocatedMainPoints() + 3);
+            } else {
+                character.addSecondaryPoints();
+            }
+
+            log.info("Character leveled up!");
+        }
+    }
+
+    private int calculateDamage(GameCharacter character, Enemy enemy) {
+        int damage;
+        int minDam = 1 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
+        int maxDam = 3 + (int) Math.ceil((double) character.getPhysicalHarm() / 2);
+
+        damage = minDam + random.nextInt((maxDam - minDam) + 1); // Damage calculation
+        int defTemp = enemy.getDef() - character.getArmorPiercing();
+        if (defTemp > 0) {
+            damage = damage - defTemp;
+        }
+        int luckChance = random.nextInt(1000) + 1; // 0.1 point crit chance for 1 point agility
+        if (luckChance < character.getCritChance()) {
+            damage *= 2;
+        }
+        return damage;
+    }
 }
