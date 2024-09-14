@@ -42,6 +42,6 @@ public class CharacterRequest {
     private int unallocatedIntePoints;
 
     private int latestDamage;
+
     private int initiative;
-    private boolean win;
 }

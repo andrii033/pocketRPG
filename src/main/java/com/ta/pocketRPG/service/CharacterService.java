@@ -64,8 +64,6 @@ public class CharacterService {
 
         gameCharacter.setCity(cityService.getById(1L));
 
-        gameCharacter.setWait(true);
-
         characterRepository.save(gameCharacter);
     }
 

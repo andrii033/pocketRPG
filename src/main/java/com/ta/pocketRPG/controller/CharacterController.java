@@ -148,7 +148,6 @@ public class CharacterController {
 
 
 
-
     private CharacterRequest mapGameCharacterToCharacterRequest(GameCharacter gameCharacter) {
         CharacterRequest characterRequest = new CharacterRequest();
 

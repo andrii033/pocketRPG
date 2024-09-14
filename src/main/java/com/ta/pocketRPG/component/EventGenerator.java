@@ -20,6 +20,8 @@ import java.util.Random;
 @Component
 public class EventGenerator {
 
+    private final int rate = 5000;
+
     private final CharacterService characterService;
     private final EnemyRepository enemyRepository;
     private final Random random = new Random();
@@ -38,7 +40,7 @@ public class EventGenerator {
         this.cityRepository = cityRepository;
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = rate)
     @Transactional
     public void generateEvent() {
         for (Long cityId : activeRooms.keySet()) {
@@ -81,19 +83,27 @@ public class EventGenerator {
         characterFightList = characterRepository.findByCityId(cityId);
         enemies = enemyRepository.findByCityId(cityId);
 
+        for (Enemy enemy : enemies) {
+            if (enemy.getCharId() == null) {
+                Random random = new Random();
+                int upperBound = characterFightList.size();
+                int randomNumber = random.nextInt(upperBound);
+                enemy.setCharId(characterFightList.get(randomNumber).getId());
+            }
+        }
+
         for (GameCharacter gameCharacter : characterFightList) {
             for (Enemy enemy : enemies) {
                 if (gameCharacter.getEnemyId() == enemy.getId()) {
                     int damage = calculateDamage(gameCharacter, enemy);
-                    log.info("Damage: " + damage);
                     enemy.setHp(enemy.getHp() - damage);
-                    gameCharacter.setExp(gameCharacter.getExp()+damage);
+                    gameCharacter.setExp(gameCharacter.getExp() + damage);
                     lvlUp(gameCharacter);
                     if (enemy.getHp() <= 0) {
                         enemy.setHp(0);
                     }
-
                 }
+
             }
         }
 

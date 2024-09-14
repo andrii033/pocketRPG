@@ -51,9 +51,9 @@ public class GameCharacter {
     private int unallocatedIntePoints;
 
     private int latestDam;
+
     private int initiative;
 
-    private boolean wait;
 
     @ManyToOne
     @JoinColumn(name = "party_id")
@@ -64,10 +64,6 @@ public class GameCharacter {
 
     @ManyToOne
     private City city;
-
-    public void addExp(int newExp){
-        exp+=newExp;
-    }
 
     public void addSecondaryPoints(){
         unallocatedAgiPoints+=agi;
