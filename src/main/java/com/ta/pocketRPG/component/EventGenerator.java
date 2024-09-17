@@ -83,6 +83,8 @@ public class EventGenerator {
         characterFightList = characterRepository.findByCityId(cityId);
         enemies = enemyRepository.findByCityId(cityId);
 
+
+        //randomly searches for a target to attack
         for (Enemy enemy : enemies) {
             if (enemy.getCharId() == null) {
                 Random random = new Random();
@@ -94,6 +96,8 @@ public class EventGenerator {
 
         for (GameCharacter gameCharacter : characterFightList) {
             for (Enemy enemy : enemies) {
+
+                //character attack
                 if (gameCharacter.getEnemyId() == enemy.getId()) {
                     int damage = calculateDamage(gameCharacter, enemy);
                     enemy.setHp(enemy.getHp() - damage);
@@ -103,7 +107,14 @@ public class EventGenerator {
                         enemy.setHp(0);
                     }
                 }
-
+                //enemy attack
+                if(enemy.getCharId()== gameCharacter.getId()){
+                    gameCharacter.setHp(gameCharacter.getHp() - (enemy.getStr()+enemy.getAgi()));
+                    if (gameCharacter.getHp() <= 0) {
+                        gameCharacter.setHp(0);
+                        gameCharacter.setCity(cityRepository.findCityById(1));
+                    }
+                }
             }
         }
 
