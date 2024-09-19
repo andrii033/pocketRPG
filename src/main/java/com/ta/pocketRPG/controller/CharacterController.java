@@ -195,19 +195,18 @@ public class CharacterController {
     }
 
 
+    @GetMapping("/lvlup")
+    private ResponseEntity<?> getPoints() {
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+        LvlUpRequest lvlUpRequest = new LvlUpRequest();
+        lvlUpRequest.setUnallocatedMainPoints(gameCharacter.getUnallocatedMainPoints());
+        lvlUpRequest.setUnallocatedStrPoints(gameCharacter.getUnallocatedStrPoints());
+        lvlUpRequest.setUnallocatedAgiPoints(gameCharacter.getUnallocatedAgiPoints());
+        lvlUpRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
+        return ResponseEntity.ok(lvlUpRequest);
+    }
 
-//    @GetMapping("/lvlup")
-//    private ResponseEntity<?> getPoints() {
-//        User user = userService.getCurrentUser();
-//        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-//        LvlUpRequest lvlUpRequest = new LvlUpRequest();
-//        lvlUpRequest.setUnallocatedMainPoints(gameCharacter.getUnallocatedMainPoints());
-//        lvlUpRequest.setUnallocatedStrPoints(gameCharacter.getUnallocatedStrPoints());
-//        lvlUpRequest.setUnallocatedAgiPoints(gameCharacter.getUnallocatedAgiPoints());
-//        lvlUpRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
-//        return ResponseEntity.ok(lvlUpRequest);
-//    }
-//
 //    @PostMapping("/lvlup")
 //    private ResponseEntity<?> setPoints(@RequestBody LvlUpRequest lvlUpRequest) {
 //        User user = userService.getCurrentUser();
