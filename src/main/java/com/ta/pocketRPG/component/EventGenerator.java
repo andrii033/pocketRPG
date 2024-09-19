@@ -110,6 +110,7 @@ public class EventGenerator {
                 //enemy attack
                 if(enemy.getCharId()== gameCharacter.getId()){
                     gameCharacter.setHp(gameCharacter.getHp() - (enemy.getStr()+enemy.getAgi()));
+                    log.info("character hp: "+gameCharacter.getHp());
                     if (gameCharacter.getHp() <= 0) {
                         gameCharacter.setHp(0);
                         gameCharacter.setCity(cityRepository.findCityById(1));

@@ -30,7 +30,6 @@ public class CharacterService {
         gameCharacter.setArmorPiercing(1);
         gameCharacter.setReduceBlockDam(1);
         gameCharacter.setMaxHealth(1);
-        gameCharacter.setMaxHealth(1);
         gameCharacter.setCritChance(1);
         gameCharacter.setAttackSpeed(1);
         gameCharacter.setAvoidance(1);
@@ -43,7 +42,7 @@ public class CharacterService {
         gameCharacter.setRes(0);
         gameCharacter.setExp(0);
         gameCharacter.setLvl(1);
-        gameCharacter.setHp(10);
+        gameCharacter.setHp(30+(gameCharacter.getLvl()*3)+gameCharacter.getMaxHealth());
         gameCharacter.setInitiative(10);
 
         if (request.getStr() + request.getAgi() + request.getInte() == 3) {
