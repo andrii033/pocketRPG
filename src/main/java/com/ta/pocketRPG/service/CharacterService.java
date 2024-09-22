@@ -42,7 +42,7 @@ public class CharacterService {
         gameCharacter.setRes(0);
         gameCharacter.setExp(0);
         gameCharacter.setLvl(1);
-        gameCharacter.setHp(30+(gameCharacter.getLvl()*3)+gameCharacter.getMaxHealth());
+        gameCharacter.setHp(20+(gameCharacter.getLvl()*3)+gameCharacter.getMaxHealth());
         gameCharacter.setInitiative(10);
 
         if (request.getStr() + request.getAgi() + request.getInte() == 3) {

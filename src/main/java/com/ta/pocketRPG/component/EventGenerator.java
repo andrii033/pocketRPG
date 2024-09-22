@@ -11,10 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -52,13 +49,15 @@ public class EventGenerator {
                 for (Enemy enemy : enemies) {
                     sum += enemy.getHp();
                 }
-                if (sum > 0 && characterFightList.size() > 0) {
+                if (sum > 0 && !characterFightList.isEmpty()) {
                     processRoomEvents(cityId);
                 } else {
                     stopFightCycle(cityId);
                     //move to start city
                     for (GameCharacter character : characterFightList) {
                         character.setCity(cityRepository.findCityById(1));
+                        //restore hp
+                        character.setHp(20 + (character.getLvl() * 3) + character.getMaxHealth());
                     }
                     cityRepository.deleteById(cityId);
                 }
@@ -108,12 +107,12 @@ public class EventGenerator {
                     }
                 }
                 //enemy attack
-                if(enemy.getCharId()== gameCharacter.getId()){
-                    gameCharacter.setHp(gameCharacter.getHp() - (enemy.getStr()+enemy.getAgi()));
-                    log.info("character hp: "+gameCharacter.getHp());
+                if (Objects.equals(enemy.getCharId(), gameCharacter.getId()) && enemy.getHp() > 0) {
+                    gameCharacter.setHp(gameCharacter.getHp() - (enemy.getStr() + enemy.getAgi()));
                     if (gameCharacter.getHp() <= 0) {
                         gameCharacter.setHp(0);
                         gameCharacter.setCity(cityRepository.findCityById(1));
+
                     }
                 }
             }

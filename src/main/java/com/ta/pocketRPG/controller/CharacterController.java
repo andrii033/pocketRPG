@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -112,6 +113,29 @@ public class CharacterController {
         return ResponseEntity.ok(characterRequest);
     }
 
+    @GetMapping("/getCharacter")
+    public ResponseEntity<?> characterInfo() {
+        User user = userService.getCurrentUser();
+
+        Optional<GameCharacter> gameCharacter = characterRepository.findById(user.getSelectedCharacterId());
+
+        CharacterRequest characterRequest = new CharacterRequest();
+        characterRequest.setCharacterName(gameCharacter.get().getCharacterName());
+        characterRequest.setId(gameCharacter.get().getId());
+        characterRequest.setStr(gameCharacter.get().getStr());
+        characterRequest.setInte(gameCharacter.get().getInte());
+        characterRequest.setAgi(gameCharacter.get().getAgi());
+
+        characterRequest.setDef(gameCharacter.get().getDef());
+        characterRequest.setHp(gameCharacter.get().getHp());
+        characterRequest.setMana(gameCharacter.get().getMana());
+        characterRequest.setInitiative(gameCharacter.get().getInitiative());
+
+        characterRequest.setLvl(gameCharacter.get().getLvl());
+
+        return ResponseEntity.ok(characterRequest);
+    }
+
 
     @PostMapping("/fight")
     public ResponseEntity<?> fightData(@RequestBody String id) {
@@ -127,9 +151,6 @@ public class CharacterController {
             List<EnemyRequest> enemyRequests = enemyService.findEnemiesAndMapToEnemyRequest(gameCharacter.getCity());
             fightRequest.setEnemyRequest(enemyRequests);
 
-            if (gameCharacter == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Character not found.");
-            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve character.");
         }
