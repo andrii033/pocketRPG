@@ -35,20 +35,20 @@ public class EnemyService {
         List<Enemy> enemies = enemyRepository.findByCity(city);
 
         for (var x : enemies) {
-            EnemyRequest enemy = new EnemyRequest();
-            enemy.setArmorPiercing(x.getArmorPiercing());
-            enemy.setDef(x.getDef());
-            enemy.setId(x.getId());
-            enemy.setName(x.getName());
-            enemy.setStr(x.getStr());
-            enemy.setAgi(x.getAgi());
-            enemy.setInte(x.getInte());
-            enemy.setHp(x.getHp());
-            enemy.setLatestDam(x.getLatestDam());
-            enemy.setCharId(x.getCharId());
-            enemy.setInitiative(x.getInitiative());
+                EnemyRequest enemy = new EnemyRequest();
+                enemy.setArmorPiercing(x.getArmorPiercing());
+                enemy.setDef(x.getDef());
+                enemy.setId(x.getId());
+                enemy.setName(x.getName());
+                enemy.setStr(x.getStr());
+                enemy.setAgi(x.getAgi());
+                enemy.setInte(x.getInte());
+                enemy.setHp(x.getHp());
+                enemy.setLatestDam(x.getLatestDam());
+                enemy.setCharId(x.getCharId());
+                enemy.setInitiative(x.getInitiative());
 
-            enemyRequests.add(enemy);
+                enemyRequests.add(enemy);
         }
 
         return enemyRequests;

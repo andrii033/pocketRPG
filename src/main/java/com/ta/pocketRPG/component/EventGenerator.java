@@ -40,30 +40,31 @@ public class EventGenerator {
     @Scheduled(fixedRate = rate)
     @Transactional
     public void generateEvent() {
-        for (Long cityId : activeRooms.keySet()) {
+        Iterator<Long> iterator = activeRooms.keySet().iterator();  // Получаем итератор для ключей
+        while (iterator.hasNext()) {
+            Long cityId = iterator.next();
             log.info("City: " + cityId);
             if (activeRooms.get(cityId)) {
                 characterFightList = characterRepository.findByCityId(cityId);
                 enemies = enemyRepository.findByCityId(cityId);
-                int sum = 0;
-                for (Enemy enemy : enemies) {
-                    sum += enemy.getHp();
-                }
+                int sum = enemies.stream().mapToInt(Enemy::getHp).sum();
+
                 if (sum > 0 && !characterFightList.isEmpty()) {
                     processRoomEvents(cityId);
                 } else {
-                    stopFightCycle(cityId);
-                    //move to start city
+                    // Останавливаем бой и перемещаем персонажей в стартовый город
                     for (GameCharacter character : characterFightList) {
                         character.setCity(cityRepository.findCityById(1));
-                        //restore hp
                         character.setHp(20 + (character.getLvl() * 3) + character.getMaxHealth());
                     }
                     cityRepository.deleteById(cityId);
+                    iterator.remove();  // Безопасно удаляем элемент через итератор
+                    log.info("Stopping Fight Cycle " + cityId);
                 }
             }
         }
     }
+
 
     @Transactional
     public void startFightCycle(Long cityId) {
@@ -71,12 +72,6 @@ public class EventGenerator {
         activeRooms.put(cityId, true);
     }
 
-    @Transactional
-    public void stopFightCycle(Long cityId) {
-        //activeRooms.put(city.getId(), false);
-        log.info("Stopping Fight Cycle " + cityId);
-        activeRooms.remove(cityId);
-    }
 
     private void processRoomEvents(Long cityId) {
         characterFightList = characterRepository.findByCityId(cityId);
