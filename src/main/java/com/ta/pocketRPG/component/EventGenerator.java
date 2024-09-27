@@ -95,7 +95,7 @@ public class EventGenerator {
                 if (gameCharacter.getEnemyId() == enemy.getId()) {
                     int damage = calculateDamage(gameCharacter, enemy);
                     enemy.setHp(enemy.getHp() - damage);
-                    gameCharacter.setExp(gameCharacter.getExp() + damage);
+                    gameCharacter.setExp(gameCharacter.getExp() + damage * 3);
                     lvlUp(gameCharacter);
                     if (enemy.getHp() <= 0) {
                         enemy.setHp(0);

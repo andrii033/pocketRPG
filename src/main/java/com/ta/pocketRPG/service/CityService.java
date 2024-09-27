@@ -30,9 +30,9 @@ public class CityService {
         startingCity.setName("Starting city");
         cities.add(startingCity);
 
-        City battleField = new City();
-        battleField.setName("Battlefield");
-        cities.add(battleField);
+//        City battleField = new City();
+//        battleField.setName("Battlefield");
+//        cities.add(battleField);
 
 //        List<Enemy> enemies = new ArrayList<>();
 //        for (int i=0; i<5; i++) {

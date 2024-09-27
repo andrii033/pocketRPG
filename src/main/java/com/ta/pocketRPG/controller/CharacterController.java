@@ -119,6 +119,10 @@ public class CharacterController {
 
         Optional<GameCharacter> gameCharacter = characterRepository.findById(user.getSelectedCharacterId());
 
+//        gameCharacter.get().setHp(20 + (gameCharacter.get().getLvl() * 3) + gameCharacter.get().getMaxHealth());
+//        gameCharacter.get().setCity(cityRepository.findCityById(1));
+//        characterRepository.save(gameCharacter.get());
+
         CharacterRequest characterRequest = new CharacterRequest();
         characterRequest.setCharacterName(gameCharacter.get().getCharacterName());
         characterRequest.setId(gameCharacter.get().getId());
@@ -221,10 +225,31 @@ public class CharacterController {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
         LvlUpRequest lvlUpRequest = new LvlUpRequest();
+
         lvlUpRequest.setUnallocatedMainPoints(gameCharacter.getUnallocatedMainPoints());
         lvlUpRequest.setUnallocatedStrPoints(gameCharacter.getUnallocatedStrPoints());
         lvlUpRequest.setUnallocatedAgiPoints(gameCharacter.getUnallocatedAgiPoints());
         lvlUpRequest.setUnallocatedIntePoints(gameCharacter.getUnallocatedIntePoints());
+
+        lvlUpRequest.setAgi(gameCharacter.getAgi());
+        lvlUpRequest.setStr(gameCharacter.getStr());
+        lvlUpRequest.setInte(gameCharacter.getInte());
+
+        lvlUpRequest.setPhysicalHarm(gameCharacter.getPhysicalHarm());
+        lvlUpRequest.setArmorPiercing(gameCharacter.getArmorPiercing());
+        lvlUpRequest.setReduceBlockDam(gameCharacter.getReduceBlockDam());
+        lvlUpRequest.setMaxHealth(gameCharacter.getMaxHealth());
+
+        lvlUpRequest.setCritChance(gameCharacter.getCritChance());
+        lvlUpRequest.setAttackSpeed(gameCharacter.getAttackSpeed());
+        lvlUpRequest.setAvoidance(gameCharacter.getAvoidance());
+        lvlUpRequest.setBlockChance(gameCharacter.getBlockChance());
+
+        lvlUpRequest.setMagicDam(gameCharacter.getMagicDam());
+        lvlUpRequest.setMagicCritChance(gameCharacter.getMagicCritChance());
+        lvlUpRequest.setManaRegen(gameCharacter.getManaRegen());
+        lvlUpRequest.setMaxMana(gameCharacter.getMaxMana());
+
         return ResponseEntity.ok(lvlUpRequest);
     }
 
@@ -251,6 +276,8 @@ public class CharacterController {
     private ResponseEntity<?> moveBattleCity(@RequestBody Long id) {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+
+        gameCharacter.setHp(20 + (gameCharacter.getLvl() * 3) + gameCharacter.getMaxHealth());
 
         log.info("moveBattleCity" + user);
 
