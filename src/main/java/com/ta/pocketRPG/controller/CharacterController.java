@@ -253,24 +253,44 @@ public class CharacterController {
         return ResponseEntity.ok(lvlUpRequest);
     }
 
-//    @PostMapping("/lvlup")
-//    private ResponseEntity<?> setPoints(@RequestBody LvlUpRequest lvlUpRequest) {
-//        User user = userService.getCurrentUser();
-//        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
-//
-//        int sumClientMainPoints = lvlUpRequest.getStr() + lvlUpRequest.getAgi() + lvlUpRequest.getInte()
-//                + lvlUpRequest.getUnallocatedMainPoints();//points received from the client
-//        int sumServerMainPoints = gameCharacter.getUnallocatedMainPoints() + gameCharacter.getStr() +
-//                gameCharacter.getAgi() + gameCharacter.getInte();
-//        if (sumServerMainPoints == sumClientMainPoints) {
-//            gameCharacter.setUnallocatedMainPoints(lvlUpRequest.getUnallocatedMainPoints());
-//            gameCharacter.setStr(lvlUpRequest.getStr());
-//            gameCharacter.setAgi(lvlUpRequest.getAgi());
-//            gameCharacter.setInte(lvlUpRequest.getInte());
-//        }
-//
-//        return ResponseEntity.ok("ok");
-//    }
+    @PostMapping("/lvlup")
+    private ResponseEntity<?> setPoints(@RequestBody LvlUpRequest lvlUpRequest) {
+        User user = userService.getCurrentUser();
+        GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
+
+        log.info("lvluprequest " + lvlUpRequest);
+
+        int sumClientMainPoints = lvlUpRequest.getStr() + lvlUpRequest.getAgi() + lvlUpRequest.getInte()
+                + lvlUpRequest.getUnallocatedMainPoints();//points received from the client
+        int sumServerMainPoints = gameCharacter.getUnallocatedMainPoints() + gameCharacter.getStr() +
+                gameCharacter.getAgi() + gameCharacter.getInte();
+
+        if (sumServerMainPoints == sumClientMainPoints) {
+            gameCharacter.setUnallocatedMainPoints(lvlUpRequest.getUnallocatedMainPoints());
+            gameCharacter.setStr(lvlUpRequest.getStr());
+            gameCharacter.setAgi(lvlUpRequest.getAgi());
+            gameCharacter.setInte(lvlUpRequest.getInte());
+
+            gameCharacter.setPhysicalHarm(lvlUpRequest.getPhysicalHarm());
+            gameCharacter.setArmorPiercing(lvlUpRequest.getArmorPiercing());
+
+            gameCharacter.setReduceBlockDam(lvlUpRequest.getReduceBlockDam());
+            gameCharacter.setMaxHealth(lvlUpRequest.getMaxHealth());
+            gameCharacter.setCritChance(lvlUpRequest.getCritChance());
+            gameCharacter.setAttackSpeed(lvlUpRequest.getAttackSpeed());
+            gameCharacter.setAvoidance(lvlUpRequest.getAvoidance());
+            gameCharacter.setBlockChance(lvlUpRequest.getBlockChance());
+            gameCharacter.setMagicDam(lvlUpRequest.getMagicDam());
+            gameCharacter.setMagicCritChance(lvlUpRequest.getMagicCritChance());
+            gameCharacter.setManaRegen(lvlUpRequest.getManaRegen());
+            gameCharacter.setMaxMana(lvlUpRequest.getMaxMana());
+
+// Saving updated gameCharacter to the repository
+            characterRepository.save(gameCharacter);
+
+        }
+        return ResponseEntity.ok(lvlUpRequest);
+    }
 
     @PostMapping("/move")
     private ResponseEntity<?> moveBattleCity(@RequestBody Long id) {
