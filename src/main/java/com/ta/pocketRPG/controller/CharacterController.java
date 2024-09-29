@@ -258,36 +258,67 @@ public class CharacterController {
         User user = userService.getCurrentUser();
         GameCharacter gameCharacter = characterRepository.getById(user.getSelectedCharacterId());
 
-        log.info("lvluprequest " + lvlUpRequest);
+        log.info("lvlUprequest "+lvlUpRequest);
 
         int sumClientMainPoints = lvlUpRequest.getStr() + lvlUpRequest.getAgi() + lvlUpRequest.getInte()
                 + lvlUpRequest.getUnallocatedMainPoints();//points received from the client
         int sumServerMainPoints = gameCharacter.getUnallocatedMainPoints() + gameCharacter.getStr() +
                 gameCharacter.getAgi() + gameCharacter.getInte();
+        int sumClientStrPoints = lvlUpRequest.getUnallocatedStrPoints()+(lvlUpRequest.getPhysicalHarm() + lvlUpRequest.getArmorPiercing())+
+                lvlUpRequest.getReduceBlockDam()+lvlUpRequest.getMaxHealth();
+        int sumServerStrPoints = gameCharacter.getUnallocatedStrPoints()
+                + gameCharacter.getPhysicalHarm() + gameCharacter.getArmorPiercing()
+                + gameCharacter.getReduceBlockDam() + gameCharacter.getMaxHealth();
+        int sumClientAgiPoints = lvlUpRequest.getUnallocatedAgiPoints() +lvlUpRequest.getCritChance() + lvlUpRequest.getAttackSpeed()
+                + lvlUpRequest.getAvoidance() + lvlUpRequest.getBlockChance();
+        log.info("sumClientAgiPoints "+sumClientAgiPoints+" "+lvlUpRequest.getUnallocatedAgiPoints()+" "+lvlUpRequest.getAttackSpeed()+" "+lvlUpRequest.getAvoidance()+" "+lvlUpRequest.getBlockChance());
+        int sumServerAgiPoints = gameCharacter.getUnallocatedAgiPoints() + gameCharacter.getCritChance()+ gameCharacter.getAttackSpeed()
+                + gameCharacter.getAvoidance() + gameCharacter.getBlockChance();
+        log.info("sumServertAgiPoints "+gameCharacter.getUnallocatedAgiPoints()+" "+gameCharacter.getCritChance()+" "+gameCharacter.getAttackSpeed()+" "+gameCharacter.getAvoidance()+" "+gameCharacter.getBlockChance());
+        int sumClientIntePoints = lvlUpRequest.getUnallocatedIntePoints() + lvlUpRequest.getMagicDam()
+                + lvlUpRequest.getMagicCritChance() + lvlUpRequest.getManaRegen()
+                + lvlUpRequest.getMaxMana();
+        int sumServerIntePoints = gameCharacter.getUnallocatedIntePoints() + gameCharacter.getMagicDam()
+                + gameCharacter.getMagicCritChance() + gameCharacter.getManaRegen()
+                + gameCharacter.getMaxMana();
 
-        if (sumServerMainPoints == sumClientMainPoints) {
+//        log.info("Client Main Points: " + sumClientMainPoints + ", Server Main Points: " + sumServerMainPoints);
+//        log.info("Client Str Points: " + sumClientStrPoints + ", Server Str Points: " + sumServerStrPoints);
+        log.info("Client Agi Points: " + sumClientAgiPoints + ", Server Agi Points: " + sumServerAgiPoints);
+//        log.info("Client Inte Points: " + sumClientIntePoints + ", Server Inte Points: " + sumServerIntePoints);
+
+        // Checking if client's and server's points match
+        if (sumServerMainPoints == sumClientMainPoints &&
+                sumServerStrPoints == sumClientStrPoints &&
+                sumServerAgiPoints == sumClientAgiPoints &&
+                sumServerIntePoints == sumClientIntePoints) {
+            // Update the gameCharacter's attributes with the lvlUpRequest's attributes
             gameCharacter.setUnallocatedMainPoints(lvlUpRequest.getUnallocatedMainPoints());
             gameCharacter.setStr(lvlUpRequest.getStr());
             gameCharacter.setAgi(lvlUpRequest.getAgi());
             gameCharacter.setInte(lvlUpRequest.getInte());
 
+            gameCharacter.setUnallocatedStrPoints(lvlUpRequest.getUnallocatedStrPoints());
+            gameCharacter.setUnallocatedAgiPoints(lvlUpRequest.getUnallocatedAgiPoints());
+            gameCharacter.setUnallocatedIntePoints(lvlUpRequest.getUnallocatedIntePoints());
+
             gameCharacter.setPhysicalHarm(lvlUpRequest.getPhysicalHarm());
             gameCharacter.setArmorPiercing(lvlUpRequest.getArmorPiercing());
-
             gameCharacter.setReduceBlockDam(lvlUpRequest.getReduceBlockDam());
             gameCharacter.setMaxHealth(lvlUpRequest.getMaxHealth());
+
             gameCharacter.setCritChance(lvlUpRequest.getCritChance());
             gameCharacter.setAttackSpeed(lvlUpRequest.getAttackSpeed());
             gameCharacter.setAvoidance(lvlUpRequest.getAvoidance());
             gameCharacter.setBlockChance(lvlUpRequest.getBlockChance());
+
             gameCharacter.setMagicDam(lvlUpRequest.getMagicDam());
             gameCharacter.setMagicCritChance(lvlUpRequest.getMagicCritChance());
             gameCharacter.setManaRegen(lvlUpRequest.getManaRegen());
             gameCharacter.setMaxMana(lvlUpRequest.getMaxMana());
 
-// Saving updated gameCharacter to the repository
+            // Saving updated gameCharacter to the repository
             characterRepository.save(gameCharacter);
-
         }
         return ResponseEntity.ok(lvlUpRequest);
     }

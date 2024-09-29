@@ -94,9 +94,15 @@ public class EventGenerator {
                 //character attack
                 if (gameCharacter.getEnemyId() == enemy.getId()) {
                     int damage = calculateDamage(gameCharacter, enemy);
+                    if(damage > enemy.getHp())
+                    {
+                        gameCharacter.setExp(gameCharacter.getExp() + enemy.getHp());
+                    }else {
+                        gameCharacter.setExp(gameCharacter.getExp() + damage);
+                    }
                     enemy.setHp(enemy.getHp() - damage);
                     enemy.setLatestDam(-damage);
-                    gameCharacter.setExp(gameCharacter.getExp() + damage * 3);
+
                     lvlUp(gameCharacter);
                     if (enemy.getHp() <= 0) {
                         enemy.setHp(0);
@@ -142,7 +148,7 @@ public class EventGenerator {
         if (defTemp > 0) {
             damage = damage - defTemp;
         }
-        int luckChance = random.nextInt(1000) + 1; // 0.1 point crit chance for 1 point agility
+        int luckChance = random.nextInt(1000) + 1; // 0.1 point crit chance for 1 point critChance
         if (luckChance < character.getCritChance()) {
             damage *= 2;
         }
