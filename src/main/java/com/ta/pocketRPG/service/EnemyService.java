@@ -22,7 +22,7 @@ public class EnemyService {
         enemy.setInte(1);
         enemy.setCity(city);
         enemy.setHp(10);
-        enemy.setInitiative(7);
+        enemy.setMaxHealth(10);
         return enemy;
     }
 
@@ -46,7 +46,7 @@ public class EnemyService {
                 enemy.setHp(x.getHp());
                 enemy.setLatestDam(x.getLatestDam());
                 enemy.setCharId(x.getCharId());
-                enemy.setInitiative(x.getInitiative());
+                enemy.setMaxHealth(x.getMaxHealth());
 
                 enemyRequests.add(enemy);
         }

@@ -106,7 +106,6 @@ public class CharacterController {
         characterRequest.setDef(gameCharacter.getDef());
         characterRequest.setHp(gameCharacter.getHp());
         characterRequest.setMana(gameCharacter.getMana());
-        characterRequest.setInitiative(gameCharacter.getInitiative());
 
         characterRequest.setLvl(gameCharacter.getLvl());
 
@@ -133,7 +132,6 @@ public class CharacterController {
         characterRequest.setDef(gameCharacter.get().getDef());
         characterRequest.setHp(gameCharacter.get().getHp());
         characterRequest.setMana(gameCharacter.get().getMana());
-        characterRequest.setInitiative(gameCharacter.get().getInitiative());
 
         characterRequest.setLvl(gameCharacter.get().getLvl());
 
